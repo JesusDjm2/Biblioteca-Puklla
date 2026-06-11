@@ -1,0 +1,301 @@
+/* Biblioteca virtual / física — panel CRUD */
+.bv-crud-nav {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 0.35rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.bv-crud-nav-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.bv-crud-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #495057;
+    border: 1px solid transparent;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.bv-crud-tab:hover {
+    background: #f1f3f5;
+    color: #212529;
+    text-decoration: none;
+}
+
+.bv-crud-tab.is-active {
+    background: #17a2b8;
+    color: #fff;
+    border-color: #138496;
+}
+
+.bv-crud-toolbar {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.bv-crud-toolbar .form-control,
+.bv-crud-toolbar .custom-select {
+    border-radius: 6px;
+}
+
+.bv-crud-page-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.25rem;
+}
+
+.bv-crud-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.bibli-crud-breadcrumb {
+    background: #fff !important;
+    border-radius: 6px;
+    padding: 0.5rem 1rem !important;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    font-size: 0.875rem;
+}
+
+.bv-crud-table-wrap {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 0.5rem 0.75rem 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.bv-crud-table-wrap .table {
+    margin-bottom: 0;
+}
+
+.bv-crud-table-wrap .table thead th {
+    border-top: none;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #495057;
+}
+
+.bv-crud-actions .btn {
+    margin-right: 0.2rem;
+    margin-bottom: 0.2rem;
+}
+
+.bv-crud-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.bv-crud-pagination .pagination {
+    margin-bottom: 0;
+    margin-top: 1rem;
+    justify-content: flex-end;
+}
+
+/* ═══════════════════════════════════════════════
+   FORM CARDS — secciones de formulario
+═══════════════════════════════════════════════ */
+.bv-form-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.055);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.bv-form-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #17a2b8;
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid rgba(23, 162, 184, 0.18);
+}
+
+.bv-form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+.bv-form-card .form-control:focus,
+.bv-form-card .custom-select:focus {
+    border-color: #17a2b8;
+    box-shadow: 0 0 0 0.18rem rgba(23, 162, 184, 0.2);
+}
+
+/* ═══════════════════════════════════════════════
+   CATEGORY PILLS — checkboxes como etiquetas
+═══════════════════════════════════════════════ */
+.bv-cat-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.25rem 0 0.5rem;
+}
+
+.bv-cat-pill {
+    position: relative;
+    display: inline-flex;
+}
+
+.bv-cat-pill input[type="checkbox"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.bv-cat-pill label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.38rem 0.85rem;
+    border-radius: 50px;
+    border: 1.5px solid #dee2e6;
+    font-size: 0.85rem;
+    color: #495057;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.18s, border-color 0.18s, color 0.18s, box-shadow 0.15s;
+    background: #f8f9fa;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.bv-cat-pill label:hover {
+    border-color: #17a2b8;
+    color: #17a2b8;
+    background: rgba(23, 162, 184, 0.07);
+}
+
+.bv-cat-pill input[type="checkbox"]:checked + label {
+    background: #17a2b8;
+    border-color: #138496;
+    color: #fff;
+}
+
+.bv-cat-pill input[type="checkbox"]:focus-visible + label {
+    box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.3);
+    outline: none;
+}
+
+/* ═══════════════════════════════════════════════
+   CHARACTER COUNTER
+═══════════════════════════════════════════════ */
+.bv-char-counter {
+    font-size: 0.72rem;
+    color: #adb5bd;
+    text-align: right;
+    margin-top: 0.2rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.bv-char-counter.near-limit { color: #fd7e14; }
+.bv-char-counter.at-limit   { color: #dc3545; }
+
+/* ═══════════════════════════════════════════════
+   FORM ACTIONS
+═══════════════════════════════════════════════ */
+.bv-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding-top: 0.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ═══════════════════════════════════════════════
+   EMPTY STATE mejorado
+═══════════════════════════════════════════════ */
+.bv-empty-state {
+    text-align: center;
+    padding: 3.5rem 1rem 3rem;
+    color: #6c757d;
+}
+
+.bv-empty-state .bv-empty-icon {
+    font-size: 2.75rem;
+    opacity: 0.22;
+    display: block;
+    margin-bottom: 0.85rem;
+    color: #17a2b8;
+}
+
+.bv-empty-state p {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+/* ═══════════════════════════════════════════════
+   STAT CHIPS — contador en el encabezado
+═══════════════════════════════════════════════ */
+.bv-stat-chips {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+}
+
+.bv-stat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 50px;
+    background: #e8f7fa;
+    color: #138496;
+    font-size: 0.775rem;
+    font-weight: 500;
+    border: 1px solid rgba(23, 162, 184, 0.22);
+}
+
+/* ═══════════════════════════════════════════════
+   TABLE — mejoras de hover y fila
+═══════════════════════════════════════════════ */
+.bv-crud-table-wrap .table thead th {
+    vertical-align: middle;
+}
+
+.bv-crud-table-wrap .table tbody tr.bv-table-row {
+    transition: background 0.15s;
+}
+
+.bv-crud-table-wrap .table tbody tr.bv-table-row:hover {
+    background: #f0fafd;
+}
+
+/* ═══════════════════════════════════════════════
+   ALERT mejorado
+═══════════════════════════════════════════════ */
+.bv-alert {
+    border-radius: 8px;
+    border-left-width: 4px;
+    font-size: 0.9rem;
+}
