@@ -2,17 +2,17 @@
 @section('titulo', '- Biblioteca virtual')
 
 @section('estilos')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
 @endsection
 
 @section('contenido')
 
     {{-- ===== HERO ===== --}}
     <div class="lib-hero">
-        <img src="{{ asset('img/biblioteca-muestra.webp') }}"
-             alt="Biblioteca Pukllasunchis" class="lib-hero__bg" loading="eager">
+        <img src="{{ asset('img/fondo/tramites-2026.webp') }}" alt="Biblioteca Pukllasunchis" class="lib-hero__bg"
+            loading="eager">
         <div class="lib-hero__overlay"></div>
         <div class="lib-hero__content">
             <p class="lib-hero__eyebrow">ESPP Pukllasunchis</p>
@@ -47,11 +47,10 @@
                                 <span class="lib-sidebar__section-name">{{ $seccion->nombre }}</span>
                                 <span class="lib-sidebar__meta">
                                     <span class="sidebar-badge sidebar-badge-cat"
-                                          title="{{ $seccion->categorias_count }} categorías">
+                                        title="{{ $seccion->categorias_count }} categorías">
                                         {{ $seccion->categorias_count }}
                                     </span>
-                                    <span class="sidebar-badge sidebar-badge-book"
-                                          title="{{ $totalLibros }} textos">
+                                    <span class="sidebar-badge sidebar-badge-book" title="{{ $totalLibros }} textos">
                                         {{ $totalLibros }}
                                     </span>
                                 </span>
@@ -59,8 +58,7 @@
                             </button>
                             <div class="lib-sidebar__submenu">
                                 @foreach ($seccion->categorias as $cat)
-                                    <a href="{{ route('categorias.show', $cat->url) }}"
-                                       class="lib-sidebar__cat-link">
+                                    <a href="{{ route('categorias.show', $cat->url) }}" class="lib-sidebar__cat-link">
                                         <span class="lib-sidebar__cat-name">{{ $cat->nombre }}</span>
                                         <span class="lib-sidebar__cat-count">{{ $cat->libros_count }}</span>
                                     </a>
@@ -84,8 +82,8 @@
                 <div class="lib-controls">
                     <div class="lib-search">
                         <i class="fa fa-search lib-search__icon"></i>
-                        <input type="text" id="search-input" class="lib-search__input"
-                               placeholder="" aria-label="Buscar por título o autor">
+                        <input type="text" id="search-input" class="lib-search__input" placeholder=""
+                            aria-label="Buscar por título o autor">
                     </div>
                     <div class="lib-sort-btns">
                         <button type="button" class="lib-sort-btn" onclick="ordenarPor('nombre', this)">
@@ -103,16 +101,14 @@
                         @php
                             $urlVistaPrevia = "https://drive.google.com/thumbnail?id={$libro->identificador}&sz=w600";
                         @endphp
-                        <div class="col-6 col-md-4 lib-book-col"
-                             data-nombre="{{ $libro->nombre }}"
-                             data-autor="{{ $libro->autor }}">
+                        <div class="col-6 col-md-4 lib-book-col" data-nombre="{{ $libro->nombre }}"
+                            data-autor="{{ $libro->autor }}">
                             <div class="lib-book-card">
                                 <div class="lib-book-card__cover">
-                                    <img src="{{ $urlVistaPrevia }}"
-                                         alt="{{ $libro->nombre }}" loading="lazy">
+                                    <img src="{{ $urlVistaPrevia }}" alt="{{ $libro->nombre }}" loading="lazy">
                                     <div class="lib-book-card__overlay">
                                         <a href="https://drive.google.com/file/d/{{ $libro->identificador }}/view"
-                                           target="_blank" rel="noopener" class="lib-book-card__btn">
+                                            target="_blank" rel="noopener" class="lib-book-card__btn">
                                             <i class="fab fa-google-drive"></i> Abrir PDF
                                         </a>
                                     </div>
@@ -133,126 +129,193 @@
     </div>{{-- /container --}}
 
     <script>
-    (function () {
-        gsap.registerPlugin(ScrollTrigger, Flip);
+        (function() {
+            gsap.registerPlugin(ScrollTrigger, Flip);
 
-        /* ---- Hero parallax ---- */
-        gsap.to('.lib-hero__bg', {
-            y: '20%', ease: 'none',
-            scrollTrigger: {
-                trigger: '.lib-hero',
-                start: 'top top',
-                end:   'bottom top',
-                scrub: 1.2
-            }
-        });
+            /* ---- Hero parallax ---- */
+            gsap.to('.lib-hero__bg', {
+                y: '20%',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.lib-hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.2
+                }
+            });
 
-        /* ---- Hero text reveal ---- */
-        gsap.set('.lib-hero__eyebrow', { y: 24 });
-        gsap.set('.lib-hero__title',   { y: 32 });
-        gsap.set('.lib-hero__meta',    { y: 18 });
+            /* ---- Hero text reveal ---- */
+            gsap.set('.lib-hero__eyebrow', {
+                y: 24
+            });
+            gsap.set('.lib-hero__title', {
+                y: 32
+            });
+            gsap.set('.lib-hero__meta', {
+                y: 18
+            });
 
-        gsap.timeline({ defaults: { ease: 'power3.out' } })
-            .to('.lib-hero__eyebrow', { opacity: 1, y: 0, duration: .8 },  .25)
-            .to('.lib-hero__title',   { opacity: 1, y: 0, duration: .9 },  .45)
-            .to('.lib-hero__divider', { width: 56,         duration: .55 }, .85)
-            .to('.lib-hero__meta',    { opacity: 1, y: 0, duration: .6 },  1.05);
+            gsap.timeline({
+                    defaults: {
+                        ease: 'power3.out'
+                    }
+                })
+                .to('.lib-hero__eyebrow', {
+                    opacity: 1,
+                    y: 0,
+                    duration: .8
+                }, .25)
+                .to('.lib-hero__title', {
+                    opacity: 1,
+                    y: 0,
+                    duration: .9
+                }, .45)
+                .to('.lib-hero__divider', {
+                    width: 56,
+                    duration: .55
+                }, .85)
+                .to('.lib-hero__meta', {
+                    opacity: 1,
+                    y: 0,
+                    duration: .6
+                }, 1.05);
 
-        /* ---- Cards scroll-reveal (solo y, sin opacity para evitar transparencias) ---- */
-        gsap.from('.lib-book-col', {
-            y: 28,
-            duration: .45, stagger: .05, ease: 'power2.out',
-            scrollTrigger: {
-                trigger: '#contenedorLibros',
-                start: 'top 88%',
-                once: true
-            }
-        });
+            /* ---- Cards scroll-reveal (solo y, sin opacity para evitar transparencias) ---- */
+            gsap.from('.lib-book-col', {
+                y: 28,
+                duration: .45,
+                stagger: .05,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '#contenedorLibros',
+                    start: 'top 88%',
+                    once: true
+                }
+            });
 
-        /* ---- Sidebar accordion (GSAP height) ---- */
-        document.querySelectorAll('.lib-sidebar__section-btn').forEach(btn => {
-            const sub = btn.nextElementSibling;
-            gsap.set(sub, { height: 0, overflow: 'hidden' });
+            /* ---- Sidebar accordion (GSAP height) ---- */
+            document.querySelectorAll('.lib-sidebar__section-btn').forEach(btn => {
+                const sub = btn.nextElementSibling;
+                gsap.set(sub, {
+                    height: 0,
+                    overflow: 'hidden'
+                });
 
-            btn.addEventListener('click', () => {
-                const isOpen = btn.classList.toggle('is-open');
-                gsap.to(sub, {
-                    height: isOpen ? 'auto' : 0,
-                    duration: isOpen ? .38 : .26,
-                    ease: isOpen ? 'power2.out' : 'power2.in'
+                btn.addEventListener('click', () => {
+                    const isOpen = btn.classList.toggle('is-open');
+                    gsap.to(sub, {
+                        height: isOpen ? 'auto' : 0,
+                        duration: isOpen ? .38 : .26,
+                        ease: isOpen ? 'power2.out' : 'power2.in'
+                    });
                 });
             });
-        });
 
-        /* ---- Search ---- */
-        function norm(s) {
-            return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-        }
-        document.getElementById('search-input').addEventListener('input', function () {
-            const q = norm(this.value.trim());
-            document.querySelectorAll('.lib-book-col').forEach(col => {
-                const hit = norm(col.dataset.nombre).includes(q)
-                         || norm(col.dataset.autor).includes(q);
-                col.classList.toggle('hidden', !hit);
+            /* ---- Search ---- */
+            function norm(s) {
+                return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+            }
+            document.getElementById('search-input').addEventListener('input', function() {
+                const q = norm(this.value.trim());
+                document.querySelectorAll('.lib-book-col').forEach(col => {
+                    const hit = norm(col.dataset.nombre).includes(q) ||
+                        norm(col.dataset.autor).includes(q);
+                    col.classList.toggle('hidden', !hit);
+                });
             });
-        });
 
-        /* ---- Typewriter placeholder ---- */
-        const inp   = document.getElementById('search-input');
-        const texts = ['Educación intercultural bilingüe...', 'Metodología Montessori...', 'El docente como educador...'];
-        let ti = 0, ci = 0;
-        function typeOn() {
-            if (ci < texts[ti].length) { inp.placeholder += texts[ti][ci++]; setTimeout(typeOn, 90); }
-            else setTimeout(typeOff, 2200);
-        }
-        function typeOff() {
-            if (ci > 0) { inp.placeholder = inp.placeholder.slice(0, --ci); setTimeout(typeOff, 42); }
-            else { ti = (ti + 1) % texts.length; setTimeout(typeOn, 500); }
-        }
-        setTimeout(typeOn, 900);
+            /* ---- Typewriter placeholder ---- */
+            const inp = document.getElementById('search-input');
+            const texts = ['Educación intercultural bilingüe...', 'Metodología Montessori...',
+                'El docente como educador...'
+            ];
+            let ti = 0,
+                ci = 0;
 
-        /* ---- FAB: scroll al sidebar, se oculta cuando sidebar es visible ---- */
-        const fab     = document.getElementById('lib-sidebar-fab');
-        const sidebar = document.getElementById('lib-sidebar');
-        if (fab && sidebar) {
-            fab.addEventListener('click', () =>
-                sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            );
-            new IntersectionObserver(([e]) => {
-                if (e.isIntersecting) {
-                    gsap.to(fab, { y: 70, opacity: 0, duration: .28, ease: 'power2.in',
-                        onComplete: () => { fab.style.pointerEvents = 'none'; } });
+            function typeOn() {
+                if (ci < texts[ti].length) {
+                    inp.placeholder += texts[ti][ci++];
+                    setTimeout(typeOn, 90);
+                } else setTimeout(typeOff, 2200);
+            }
+
+            function typeOff() {
+                if (ci > 0) {
+                    inp.placeholder = inp.placeholder.slice(0, --ci);
+                    setTimeout(typeOff, 42);
                 } else {
-                    fab.style.pointerEvents = 'auto';
-                    gsap.to(fab, { y: 0, opacity: 1, duration: .35, ease: 'power2.out' });
+                    ti = (ti + 1) % texts.length;
+                    setTimeout(typeOn, 500);
                 }
-            }, { threshold: 0.15 }).observe(sidebar);
-        }
+            }
+            setTimeout(typeOn, 900);
 
-        /* ---- Sort with GSAP Flip ---- */
-        const ordenActual = { nombre: 'asc', autor: 'asc' };
-        window.ordenarPor = function (campo, btn) {
-            const wrap  = document.getElementById('contenedorLibros');
-            const cards = Array.from(wrap.querySelectorAll('.lib-book-col'));
-            const state = Flip.getState(cards);
-            const orden = ordenActual[campo];
+            /* ---- FAB: scroll al sidebar, se oculta cuando sidebar es visible ---- */
+            const fab = document.getElementById('lib-sidebar-fab');
+            const sidebar = document.getElementById('lib-sidebar');
+            if (fab && sidebar) {
+                fab.addEventListener('click', () =>
+                    sidebar.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    })
+                );
+                new IntersectionObserver(([e]) => {
+                    if (e.isIntersecting) {
+                        gsap.to(fab, {
+                            y: 70,
+                            opacity: 0,
+                            duration: .28,
+                            ease: 'power2.in',
+                            onComplete: () => {
+                                fab.style.pointerEvents = 'none';
+                            }
+                        });
+                    } else {
+                        fab.style.pointerEvents = 'auto';
+                        gsap.to(fab, {
+                            y: 0,
+                            opacity: 1,
+                            duration: .35,
+                            ease: 'power2.out'
+                        });
+                    }
+                }, {
+                    threshold: 0.15
+                }).observe(sidebar);
+            }
 
-            cards.sort((a, b) => {
-                const vA = a.dataset[campo].toLowerCase();
-                const vB = b.dataset[campo].toLowerCase();
-                return orden === 'asc'
-                    ? vA.localeCompare(vB, 'es')
-                    : vB.localeCompare(vA, 'es');
-            });
-            cards.forEach(c => wrap.appendChild(c));
+            /* ---- Sort with GSAP Flip ---- */
+            const ordenActual = {
+                nombre: 'asc',
+                autor: 'asc'
+            };
+            window.ordenarPor = function(campo, btn) {
+                const wrap = document.getElementById('contenedorLibros');
+                const cards = Array.from(wrap.querySelectorAll('.lib-book-col'));
+                const state = Flip.getState(cards);
+                const orden = ordenActual[campo];
 
-            Flip.from(state, { duration: .48, ease: 'power2.inOut', stagger: .025 });
-            ordenActual[campo] = orden === 'asc' ? 'desc' : 'asc';
+                cards.sort((a, b) => {
+                    const vA = a.dataset[campo].toLowerCase();
+                    const vB = b.dataset[campo].toLowerCase();
+                    return orden === 'asc' ?
+                        vA.localeCompare(vB, 'es') :
+                        vB.localeCompare(vA, 'es');
+                });
+                cards.forEach(c => wrap.appendChild(c));
 
-            document.querySelectorAll('.lib-sort-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-        };
-    })();
+                Flip.from(state, {
+                    duration: .48,
+                    ease: 'power2.inOut',
+                    stagger: .025
+                });
+                ordenActual[campo] = orden === 'asc' ? 'desc' : 'asc';
+
+                document.querySelectorAll('.lib-sort-btn').forEach(b => b.classList.remove('active'));
+                if (btn) btn.classList.add('active');
+            };
+        })();
     </script>
 
 @endsection

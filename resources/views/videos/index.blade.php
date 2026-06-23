@@ -5,6 +5,7 @@
         <div class="col-md-12">
             <h3>Videos
                 <a href="{{ route('videos.create') }}" class="btn btn-info btn-sm float-right">Agregar nuevo video</a>
+                <a href="{{ route('videos.import.form') }}" class="btn btn-outline-info btn-sm float-right mr-2"><i class="fa fa-upload"></i> Importar masivamente</a>
             </h3>
 
             @if (session('success'))

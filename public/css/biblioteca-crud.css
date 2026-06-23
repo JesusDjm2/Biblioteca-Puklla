@@ -103,11 +103,72 @@
     color: #6c757d;
 }
 
+.bv-crud-pagination {
+    margin-top: 1.5rem;
+}
+
 .bv-crud-pagination .pagination {
     margin-bottom: 0;
-    margin-top: 1rem;
     justify-content: flex-end;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    list-style: none;
+    padding-left: 0;
 }
+
+.bv-crud-pagination .page-item {
+    margin: 0;
+}
+
+.bv-crud-pagination .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px !important;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    background-color: #fff;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.bv-crud-pagination .page-link:hover {
+    color: #17a2b8;
+    background-color: #e8f7fa;
+    border-color: #bee5eb;
+    box-shadow: 0 2px 5px rgba(23, 162, 184, 0.12);
+}
+
+.bv-crud-pagination .page-item.active .page-link {
+    color: #fff !important;
+    background-color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+    font-weight: 600;
+    box-shadow: 0 3px 6px rgba(23, 162, 184, 0.28);
+}
+
+.bv-crud-pagination .page-item.disabled .page-link {
+    color: #adb5bd;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Limit sizing of SVG icons if Laravel renders SVG-based pagination */
+.bv-crud-pagination svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 
 /* ═══════════════════════════════════════════════
    FORM CARDS — secciones de formulario

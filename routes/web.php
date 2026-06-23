@@ -47,6 +47,8 @@ Route::resource('Libros', LibroController::class)->names('libros');
 Route::middleware(['auth'])->group(function () {
     Route::get('libros-importar', [LibroController::class, 'importForm'])->name('libros.import.form');
     Route::post('libros-importar', [LibroController::class, 'importProcess'])->name('libros.import.process');
+    Route::get('videos-importar', [VideoController::class, 'importForm'])->name('videos.import.form');
+    Route::post('videos-importar', [VideoController::class, 'importProcess'])->name('videos.import.process');
 });
 
 Route::get('libros/create/{categoria?}', [LibroController::class, 'create'])->name('libros.create');

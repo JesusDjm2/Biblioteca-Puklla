@@ -2,7 +2,7 @@
 @section('titulo', '- Página de Inicio')
 @section('contenido')
     <div class="fixed-image-container">
-        <img src="{{ asset('img/biblioteca-muestra.webp') }}" alt="Logo Sisipedia" fetchpriority="high" decoding="async">
+        <img src="{{ asset('img/fondo/tramites-2026.webp') }}" alt="Logo Sisipedia" fetchpriority="high" decoding="async">
         <div class="overlay"></div>
         <div class="centered-content">
             <h2>Biblioteca Virtual </h2>
@@ -97,8 +97,8 @@
             </div>
             <div class="col-lg-3 p-3">
                 <iframe style="border-radius:12px"
-                    src="https://open.spotify.com/embed/episode/59RAn2Ev1KkZy0dUBTJfKw?utm_source=generator" width="100%"
-                    height="352" frameBorder="0" allowfullscreen=""
+                    src="https://open.spotify.com/embed/episode/59RAn2Ev1KkZy0dUBTJfKw?utm_source=generator"
+                    width="100%" height="352" frameBorder="0" allowfullscreen=""
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"></iframe>
             </div>
@@ -140,8 +140,8 @@
                                     <div class="contenedorLibro">
                                         <div class="contenedorImagen">
                                             <img class="vistaPrevia" src="{{ $urlVistaPrevia }}"
-                                                alt="Vista previa del PDF" loading="lazy" decoding="async" width="300"
-                                                height="424">
+                                                alt="Vista previa del PDF" loading="lazy" decoding="async"
+                                                width="300" height="424">
                                             <div class="overlay">
                                                 <a href="https://drive.google.com/file/d/{{ $libro->identificador }}/view"
                                                     target="_blank">
@@ -175,8 +175,8 @@
                                     <div class="contenedorLibro">
                                         <div class="contenedorImagen">
                                             <img class="vistaPrevia" src="{{ $urlVistaPrevia }}"
-                                                alt="Vista previa del PDF" loading="lazy" decoding="async" width="300"
-                                                height="424">
+                                                alt="Vista previa del PDF" loading="lazy" decoding="async"
+                                                width="300" height="424">
                                             <div class="overlay">
                                                 <a href="https://drive.google.com/file/d/{{ $libro->identificador }}/preview"
                                                     target="_blank">
