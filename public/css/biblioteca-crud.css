@@ -1364,3 +1364,67 @@ a:hover .flecha-admin {
     color: var(--bv-accent);
     background: var(--bv-surface);
 }
+
+/* In-Page Tab Switcher (Sin recarga de página) */
+.bv-tab-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    background: var(--bv-surface);
+    border: 1px solid var(--bv-border);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    box-shadow: var(--bv-shadow);
+}
+.bv-tab-switch-nav {
+    display: inline-flex;
+    gap: 0.3rem;
+    background: var(--bv-surface-2);
+    padding: 0.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--bv-border);
+    list-style: none;
+    margin-bottom: 0;
+}
+.bv-tab-switch-nav .nav-item {
+    margin: 0;
+}
+.bv-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--bv-text-muted);
+    border-radius: 6px;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+.bv-tab-btn:hover {
+    color: var(--bv-text);
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.04);
+}
+.bv-tab-btn.active {
+    color: var(--bv-accent);
+    background: var(--bv-surface);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+}
+:root[data-theme="dark"] .bv-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme="dark"] .bv-tab-btn.active {
+    color: var(--bv-accent);
+    background: var(--bv-surface);
+}
+.bv-tab-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+

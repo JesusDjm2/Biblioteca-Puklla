@@ -15,7 +15,7 @@
         <h1 class="bv-crud-page-title mb-0">
             <i class="fa fa-edit text-warning mr-2"></i>Editar categoría de material didáctico
         </h1>
-        <a href="{{ route('biblioteca-fisica.material-categorias.index') }}" class="btn btn-sm btn-outline-secondary">
+        <a href="{{ route('biblioteca-fisica.materiales.index') }}#categorias" class="btn btn-sm btn-outline-secondary">
             <i class="fa fa-arrow-left mr-1"></i>Volver
         </a>
     </div>
@@ -32,7 +32,7 @@
             <button type="submit" class="btn btn-info btn-sm px-4">
                 <i class="fa fa-save mr-1"></i>Actualizar categoría
             </button>
-            <a href="{{ route('biblioteca-fisica.material-categorias.index') }}" class="btn btn-outline-secondary btn-sm">
+            <a href="{{ route('biblioteca-fisica.materiales.index') }}#categorias" class="btn btn-outline-secondary btn-sm">
                 Cancelar
             </a>
         </div>

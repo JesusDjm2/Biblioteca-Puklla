@@ -8,25 +8,12 @@ use Illuminate\Validation\Rule;
 
 class CategoriaMaterialDidacticoController extends Controller
 {
+    /**
+     * Redirige al tab unificado de categorías dentro de la vista principal de materiales.
+     */
     public function index(Request $request)
     {
-        $query = CategoriaMaterialDidactico::query()
-            ->withCount('materiales')
-            ->withSum('materiales', 'cantidad')
-            ->orderBy('nombre');
-
-        if ($request->filled('q')) {
-            $term = '%'.addcslashes($request->input('q'), '%_\\').'%';
-            $query->where(function ($q) use ($term) {
-                $q->where('nombre', 'like', $term)
-                    ->orWhere('codigo', 'like', $term)
-                    ->orWhere('descripcion', 'like', $term);
-            });
-        }
-
-        $categorias = $query->paginate(25)->withQueryString();
-
-        return view('material-didactico.categorias.index', compact('categorias'));
+        return redirect(route('biblioteca-fisica.materiales.index') . '#categorias');
     }
 
     public function create()
@@ -44,7 +31,7 @@ class CategoriaMaterialDidacticoController extends Controller
 
         CategoriaMaterialDidactico::create($request->only(['nombre', 'codigo', 'descripcion']));
 
-        return redirect()->route('biblioteca-fisica.material-categorias.index')
+        return redirect(route('biblioteca-fisica.materiales.index') . '#categorias')
             ->with('success', 'Categoría de material didáctico creada correctamente.');
     }
 
@@ -63,20 +50,20 @@ class CategoriaMaterialDidacticoController extends Controller
 
         $material_categoria->update($request->only(['nombre', 'codigo', 'descripcion']));
 
-        return redirect()->route('biblioteca-fisica.material-categorias.index')
+        return redirect(route('biblioteca-fisica.materiales.index') . '#categorias')
             ->with('success', 'Categoría de material didáctico actualizada correctamente.');
     }
 
     public function destroy(CategoriaMaterialDidactico $material_categoria)
     {
         if ($material_categoria->materiales()->exists()) {
-            return redirect()->route('biblioteca-fisica.material-categorias.index')
+            return redirect(route('biblioteca-fisica.materiales.index') . '#categorias')
                 ->with('error', 'No se puede eliminar la categoría mientras tenga materiales asociados.');
         }
 
         $material_categoria->delete();
 
-        return redirect()->route('biblioteca-fisica.material-categorias.index')
+        return redirect(route('biblioteca-fisica.materiales.index') . '#categorias')
             ->with('success', 'Categoría de material didáctico eliminada correctamente.');
     }
 }

@@ -30,7 +30,11 @@ class MaterialDidacticoController extends Controller
         }
 
         $materiales = $query->paginate(25)->withQueryString();
-        $categorias = CategoriaMaterialDidactico::orderBy('nombre')->get();
+        $categorias = CategoriaMaterialDidactico::query()
+            ->withCount('materiales')
+            ->withSum('materiales', 'cantidad')
+            ->orderBy('nombre')
+            ->get();
 
         return view('material-didactico.materiales.index', compact('materiales', 'categorias'));
     }
