@@ -1311,3 +1311,56 @@ a:hover .flecha-admin {
 
 .bv-confirm-modal.is-warning .bv-confirm-btn--confirm { background: #b06a1a; color: #fff; }
 .bv-confirm-modal.is-warning .bv-confirm-btn--confirm:hover { filter: brightness(0.92); }
+
+/* ═══════════════════════════════════════════════
+   SUBNAVEGACIÓN INTERNA / SEGMENTED CONTROL (Módulos unificados)
+   Permite alternar entre recursos y sus categorías sin duplicar tabs principales
+═══════════════════════════════════════════════ */
+.bv-subnav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: var(--bv-surface);
+    border: 1px solid var(--bv-border);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    box-shadow: var(--bv-shadow);
+}
+.bv-subnav-items {
+    display: inline-flex;
+    gap: 0.3rem;
+    background: var(--bv-surface-2);
+    padding: 0.22rem;
+    border-radius: 6px;
+    border: 1px solid var(--bv-border);
+}
+.bv-subnav-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--bv-text-muted);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.16s ease;
+}
+.bv-subnav-item:hover {
+    color: var(--bv-text);
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.04);
+}
+.bv-subnav-item.is-active {
+    color: var(--bv-accent);
+    background: var(--bv-surface);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+:root[data-theme="dark"] .bv-subnav-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme="dark"] .bv-subnav-item.is-active {
+    color: var(--bv-accent);
+    background: var(--bv-surface);
+}

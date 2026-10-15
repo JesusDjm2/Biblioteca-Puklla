@@ -4,9 +4,23 @@
     @include('partials.biblioteca-fisica-crud-header', [
         'active' => 'material-categorias',
         'stats' => [['valor' => $categorias->total(), 'singular' => 'categoría', 'plural' => 'categorías', 'icono' => 'fa-folder']],
-        'botones' => [['route' => route('biblioteca-fisica.material-categorias.create'), 'label' => 'Nueva categoría']],
+        'botones' => [
+            [
+                'route' => route('biblioteca-fisica.material-categorias.create'),
+                'label' => 'Nueva categoría',
+                'icono' => 'fa-plus',
+                'clase' => 'btn-info',
+            ],
+            [
+                'route' => route('biblioteca-fisica.materiales.index'),
+                'label' => 'Ver materiales',
+                'icono' => 'fa-cubes',
+                'clase' => 'btn-outline-secondary',
+            ],
+        ],
     ])
 
+    @include('material-didactico.partials.subnav', ['subactive' => 'categorias'])
     @include('material-didactico.partials.alertas')
 
     <form method="get" action="{{ route('biblioteca-fisica.material-categorias.index') }}" class="bv-crud-toolbar">

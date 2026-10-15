@@ -4,12 +4,23 @@
     @include('partials.biblioteca-fisica-crud-header', [
         'active' => 'materiales',
         'stats' => [['valor' => $materiales->total(), 'singular' => 'material', 'plural' => 'materiales', 'icono' => 'fa-cubes']],
-        'botones' => [[
-            'route' => route('biblioteca-fisica.materiales.create', array_filter(['categoria_id' => request('categoria_id')])),
-            'label' => 'Nuevo material',
-        ]],
+        'botones' => [
+            [
+                'route' => route('biblioteca-fisica.materiales.create', array_filter(['categoria_id' => request('categoria_id')])),
+                'label' => 'Nuevo material',
+                'icono' => 'fa-plus',
+                'clase' => 'btn-info',
+            ],
+            [
+                'route' => route('biblioteca-fisica.material-categorias.index'),
+                'label' => 'Categorías',
+                'icono' => 'fa-tags',
+                'clase' => 'btn-outline-secondary',
+            ],
+        ],
     ])
 
+    @include('material-didactico.partials.subnav', ['subactive' => 'materiales'])
     @include('material-didactico.partials.alertas')
 
     <form method="get" action="{{ route('biblioteca-fisica.materiales.index') }}" class="bv-crud-toolbar">
@@ -22,9 +33,14 @@
                     value="{{ request('q') }}" placeholder="Nombre, código o descripción…" autocomplete="off">
             </div>
             <div class="form-group col-md-3 mb-2 mb-md-0">
-                <label for="md-cat" class="small text-muted mb-1 d-block">
-                    <i class="fa fa-folder mr-1"></i>Categoría
-                </label>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="md-cat" class="small text-muted mb-0">
+                        <i class="fa fa-folder mr-1"></i>Categoría
+                    </label>
+                    <a href="{{ route('biblioteca-fisica.material-categorias.index') }}" class="small text-info text-decoration-none" title="Administrar categorías">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                </div>
                 <select id="md-cat" name="categoria_id" class="form-control form-control-sm bv-toolbar-control">
                     <option value="">Todas</option>
                     @foreach ($categorias as $cat)

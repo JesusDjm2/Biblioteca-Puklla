@@ -69,11 +69,7 @@
                             <a href="{{ route('biblioteca-fisica.prestamos.index') }}"><span class="flecha-admin">→</span>
                                 Préstamos</a>
                         </li>
-                        <li class="{{ request()->routeIs('biblioteca-fisica.material-categorias.*') ? 'active' : '' }}">
-                            <a href="{{ route('biblioteca-fisica.material-categorias.index') }}"><span
-                                    class="flecha-admin">→</span> Cat. material didáctico</a>
-                        </li>
-                        <li class="{{ request()->routeIs('biblioteca-fisica.materiales.*') ? 'active' : '' }}">
+                        <li class="{{ request()->routeIs('biblioteca-fisica.materiales.*', 'biblioteca-fisica.material-categorias.*') ? 'active' : '' }}">
                             <a href="{{ route('biblioteca-fisica.materiales.index') }}"><span
                                     class="flecha-admin">→</span> Material didáctico</a>
                         </li>
@@ -191,11 +187,7 @@
                             <a href="{{ route('biblioteca-fisica.prestamos.index') }}"><span
                                     class="flecha-admin">→</span> Préstamos</a>
                         </li>
-                        <li class="{{ request()->routeIs('biblioteca-fisica.material-categorias.*') ? 'active' : '' }}">
-                            <a href="{{ route('biblioteca-fisica.material-categorias.index') }}"><span
-                                    class="flecha-admin">→</span> Cat. material didáctico</a>
-                        </li>
-                        <li class="{{ request()->routeIs('biblioteca-fisica.materiales.*') ? 'active' : '' }}">
+                        <li class="{{ request()->routeIs('biblioteca-fisica.materiales.*', 'biblioteca-fisica.material-categorias.*') ? 'active' : '' }}">
                             <a href="{{ route('biblioteca-fisica.materiales.index') }}"><span
                                     class="flecha-admin">→</span> Material didáctico</a>
                         </li>

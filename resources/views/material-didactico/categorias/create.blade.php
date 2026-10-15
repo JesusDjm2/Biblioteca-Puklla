@@ -4,9 +4,10 @@
     @include('partials.biblioteca-fisica-crud-header', ['active' => 'material-categorias'])
     @include('partials.admin-breadcrumb', [
         'items' => [
-            ['label' => 'Panel',                     'url' => route('home')],
-            ['label' => 'Cat. material didáctico',   'url' => route('biblioteca-fisica.material-categorias.index')],
-            ['label' => 'Nueva categoría',           'url' => null],
+            ['label' => 'Panel',              'url' => route('home')],
+            ['label' => 'Material didáctico', 'url' => route('biblioteca-fisica.materiales.index')],
+            ['label' => 'Categorías',         'url' => route('biblioteca-fisica.material-categorias.index')],
+            ['label' => 'Nueva categoría',   'url' => null],
         ],
     ])
 
