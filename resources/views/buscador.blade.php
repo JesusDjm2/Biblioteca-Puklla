@@ -144,6 +144,7 @@
                     if ($librosCount > 0)       $resumen[] = $librosCount . ' ' . ($librosCount === 1 ? 'texto' : 'textos');
                     if ($librosFisicosCount > 0) $resumen[] = $librosFisicosCount . ' ' . ($librosFisicosCount === 1 ? 'libro físico' : 'libros físicos');
                     if ($videosCount > 0)       $resumen[] = $videosCount . ' ' . ($videosCount === 1 ? 'video' : 'videos');
+                    if ($taqeTrabajosCount > 0) $resumen[] = $taqeTrabajosCount . ' ' . ($taqeTrabajosCount === 1 ? "trabajo Taq'e" : "trabajos Taq'e");
                     if ($cancionesCount > 0)    $resumen[] = $cancionesCount . ' ' . ($cancionesCount === 1 ? 'canción' : 'canciones');
                 @endphp
                 <div class="lib-hero__meta">
@@ -165,7 +166,7 @@
             <div class="lib-search">
                 <i class="fa fa-search lib-search__icon"></i>
                 <input type="text" name="query" id="rb-query" class="lib-search__input"
-                       value="{{ $query }}" placeholder="Buscar textos, videos o canciones…"
+                       value="{{ $query }}" placeholder="Buscar textos, videos, trabajos de investigación Taq'e o canciones…"
                        autocomplete="off">
             </div>
         </form>
@@ -301,6 +302,59 @@
                     </div>
                     <a href="{{ route('catalogo-fisico') }}" class="lib-sidebar-anchor mt-1">
                         <i class="fa fa-book"></i> Ver Biblioteca Física completa
+                    </a>
+                </div>
+            @endif
+
+            {{-- ── Taq'e (Trabajos de Estudiantes) ── --}}
+            @if ($taqeTrabajos->isNotEmpty())
+                <div class="rb-section">
+                    <div class="lib-content-head">
+                        <h2 class="lib-content-head__title">Taq'e · Trabajos de estudiantes</h2>
+                        <p class="lib-content-head__sub">{{ $taqeTrabajosCount }} {{ $taqeTrabajosCount === 1 ? 'resultado' : 'resultados' }}</p>
+                    </div>
+                    <div class="row g-3 rb-grid">
+                        @foreach ($taqeTrabajos as $trabajo)
+                            <div class="col-6 col-lg-3 lib-book-col rb-item">
+                                <div class="lib-book-card" style="display:flex; flex-direction:column; height:100%; border-radius:12px; overflow:hidden; background:#fff; box-shadow:0 2px 10px rgba(42,37,32,.07); border:1px solid rgba(200,142,65,.14);">
+                                    <div class="lib-book-card__cover" style="position:relative; aspect-ratio:16/10; overflow:hidden; background:#2a2520;">
+                                        <img src="{{ $trabajo->portada_url }}" alt="{{ $trabajo->titulo }}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">
+                                        <div style="position:absolute; top:8px; left:8px; z-index:2;">
+                                            <span style="font-size:0.7rem; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(20,16,12,0.85); color:#fff; display:inline-flex; align-items:center; gap:4px; backdrop-filter:blur(4px);">
+                                                <i class="{{ $trabajo->icono }}"></i> {{ $trabajo->formato_label }}
+                                            </span>
+                                        </div>
+                                        <div class="lib-book-card__overlay">
+                                            <a href="{{ route('taqe.show', $trabajo->slug) }}" class="lib-book-card__btn">
+                                                <i class="fa fa-eye"></i> Ver trabajo
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="lib-book-card__info" style="padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:6px;">
+                                        @if($trabajo->categoria)
+                                            <div style="font-size:0.72rem; color:var(--puklla-accent, #c88e41); font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">
+                                                <i class="fa fa-folder-open"></i> {{ $trabajo->categoria->nombre }}
+                                            </div>
+                                        @endif
+                                        <h3 class="lib-book-card__title" title="{{ $trabajo->titulo }}" style="font-size:0.92rem; font-weight:700; line-height:1.35; margin:0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                                            <a href="{{ route('taqe.show', $trabajo->slug) }}" style="color:#2a2520; text-decoration:none;">
+                                                {{ $trabajo->titulo }}
+                                            </a>
+                                        </h3>
+                                        <p class="lib-book-card__author" style="font-size:0.78rem; color:#8c7b6d; margin:0;">
+                                            <i class="fa fa-user"></i> {{ $trabajo->autores }}
+                                        </p>
+                                        <div style="margin-top:auto; padding-top:6px; display:flex; align-items:center; justify-content:space-between; font-size:0.74rem; color:#a89787;">
+                                            <span><i class="fa fa-calendar-alt"></i> {{ $trabajo->anio ?? 'S/F' }}</span>
+                                            <span><i class="fa fa-language"></i> {{ $trabajo->idioma_label }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <a href="{{ route('taqe.index') }}" class="lib-sidebar-anchor mt-3">
+                        <i class="fa fa-archive"></i> Ver Repositorio Taq'e completo
                     </a>
                 </div>
             @endif

@@ -14,6 +14,9 @@ use App\Http\Controllers\PrestamoController;
 use App\Http\Controllers\SeccionController;
 use App\Http\Controllers\VideoCategoriaController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\TaqeController;
+use App\Http\Controllers\TaqeTrabajoAdminController;
+use App\Http\Controllers\TaqeCategoriaAdminController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -84,6 +87,18 @@ Route::get('canciones-Puklla', [CancionesController::class, 'canciones'])->name(
 
 Route::resource('Dashboard', AdminController::class)->names('admin')->middleware('auth');
 Route::get('resultados-de-busqueda', [EnlacesController::class, 'busqueda'])->name('busqueda');
+
+// Taq'e — Repositorio de Trabajos de Estudiantes (Público)
+Route::get('taqe', [TaqeController::class, 'index'])->name('taqe.index');
+Route::get('taqe/{slug}', [TaqeController::class, 'show'])->name('taqe.show');
+Route::get('taqe/{slug}/descargar', [TaqeController::class, 'descargar'])->name('taqe.descargar');
+
+// Taq'e — Administración
+Route::middleware(['auth', 'role:admin|biblioteca'])->prefix('admin/taqe')->name('admin.taqe.')->group(function () {
+    Route::resource('trabajos', TaqeTrabajoAdminController::class)->except(['show']);
+    Route::resource('categorias', TaqeCategoriaAdminController::class)->except(['show'])
+        ->parameters(['categorias' => 'categoria']);
+});
 
 Route::get('/limpiar-cache', function() {
     Artisan::call('cache:clear');

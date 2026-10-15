@@ -1,6 +1,7 @@
 @php
     $isBiblioteca = request()->routeIs('index', 'libros', 'libros.*', 'categorias.*', 'secciones.*', 'detallesCat');
     $isVideos = request()->routeIs('videos', 'videos.*', 'videoscat.*');
+    $isTaqe = request()->routeIs('taqe', 'taqe.*');
 @endphp
 <header class="puklla-main-nav">
     <nav class="menuPuklla" aria-label="Puklla Virtual">
@@ -52,6 +53,12 @@
                                 @if ($isVideos) aria-current="page" @endif>
                                
                                 <span>Videos</span>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('taqe.index') }}" class="menu-link {{ $isTaqe ? 'is-active' : '' }}"
+                                @if ($isTaqe) aria-current="page" @endif>
+                                <span>Taq'e</span>
                             </a>
                         </li>
                         {{-- Eliminado: Canciones --}}

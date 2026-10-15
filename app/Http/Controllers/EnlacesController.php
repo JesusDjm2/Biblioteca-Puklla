@@ -8,6 +8,7 @@ use App\Models\CategoriaFisica;
 use App\Models\Libro;
 use App\Models\LibroFisico;
 use App\Models\Seccion;
+use App\Models\TaqeTrabajo;
 use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoCategoria;
@@ -71,7 +72,24 @@ class EnlacesController extends Controller
             ->get();
         $librosFisicosCount = $librosFisicos->count();
 
-        $hasResults = !$canciones->isEmpty() || !$videos->isEmpty() || !$libros->isEmpty() || !$librosFisicos->isEmpty();
+        // Buscar en Taq'e (Trabajos de estudiantes)
+        $taqeTrabajos = TaqeTrabajo::publicados()
+            ->with('categoria')
+            ->where(function($q) use ($query) {
+                $q->where('titulo', 'like', "%$query%")
+                  ->orWhere('autores', 'like', "%$query%")
+                  ->orWhere('descripcion', 'like', "%$query%")
+                  ->orWhere('palabras_clave', 'like', "%$query%");
+            })
+            ->latest('anio')
+            ->get();
+        $taqeTrabajosCount = $taqeTrabajos->count();
+
+        $hasResults = !$canciones->isEmpty()
+            || !$videos->isEmpty()
+            || !$libros->isEmpty()
+            || !$librosFisicos->isEmpty()
+            || !$taqeTrabajos->isEmpty();
 
         // Devolver resultados a la vista buscador
         return view('buscador', [
@@ -79,12 +97,14 @@ class EnlacesController extends Controller
             'videos' => $videos,
             'libros' => $libros,
             'librosFisicos' => $librosFisicos,
+            'taqeTrabajos' => $taqeTrabajos,
             'query' => $query,
             'hasResults' => $hasResults,
             'cancionesCount' => $cancionesCount,
             'videosCount' => $videosCount,
             'librosCount' => $librosCount,
             'librosFisicosCount' => $librosFisicosCount,
+            'taqeTrabajosCount' => $taqeTrabajosCount,
         ]);
     }
     public function admin()

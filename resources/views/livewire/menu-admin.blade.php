@@ -117,13 +117,17 @@
                         <li><a href="#">Página 3</a></li>
                     </ul>
                 </li>
+                @php $openTaqe = $inGroup(['admin.taqe.*']); @endphp
                 <li>
-                    <a href="#admTake" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
-                            class="fa fa-building"></i> Take</a>
-                    <ul class="collapse list-unstyled" id="admTake">
-                        <li><a href="#">Página 1</a></li>
-                        <li><a href="#">Página 2</a></li>
-                        <li><a href="#">Página 3</a></li>
+                    <a href="#admTaqe" data-toggle="collapse" aria-expanded="{{ $openTaqe ? 'true' : 'false' }}"
+                        class="dropdown-toggle"><i class="fa fa-archive"></i> Taq'e</a>
+                    <ul class="collapse list-unstyled {{ $openTaqe ? 'show' : '' }}" id="admTaqe">
+                        <li class="{{ request()->routeIs('admin.taqe.trabajos.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.taqe.trabajos.index') }}"><span class="flecha-admin">→</span> Trabajos</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.taqe.categorias.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.taqe.categorias.index') }}"><span class="flecha-admin">→</span> Categorías</a>
+                        </li>
                     </ul>
                 </li>
 
@@ -152,6 +156,7 @@
                         'biblioteca-fisica.material-categorias.*',
                         'biblioteca-fisica.materiales.*',
                     ]);
+                    $openBibTaqe = $inGroup(['admin.taqe.*']);
                 @endphp
                 <li class="sidebar-menu-label">Administración Biblioteca</li>
                 <li>
@@ -190,6 +195,18 @@
                         <li class="{{ request()->routeIs('biblioteca-fisica.materiales.*', 'biblioteca-fisica.material-categorias.*') ? 'active' : '' }}">
                             <a href="{{ route('biblioteca-fisica.materiales.index') }}"><span
                                     class="flecha-admin">→</span> Material didáctico</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#bibTaqe" data-toggle="collapse" aria-expanded="{{ $openBibTaqe ? 'true' : 'false' }}"
+                        class="dropdown-toggle"><i class="fa fa-graduation-cap"></i> Taq'e</a>
+                    <ul class="collapse list-unstyled {{ $openBibTaqe ? 'show' : '' }}" id="bibTaqe">
+                        <li class="{{ request()->routeIs('admin.taqe.trabajos.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.taqe.trabajos.index') }}"><span class="flecha-admin">→</span> Trabajos</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.taqe.categorias.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.taqe.categorias.index') }}"><span class="flecha-admin">→</span> Categorías</a>
                         </li>
                     </ul>
                 </li>
