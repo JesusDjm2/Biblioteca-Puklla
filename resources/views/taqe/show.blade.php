@@ -286,7 +286,7 @@
                                         <h6 class="mb-1 text-truncate" style="max-width: 80%; font-size: 0.9rem;" title="{{ $rel->titulo }}">
                                             {{ $rel->titulo }}
                                         </h6>
-                                        <small class="badge badge-light border">{{ $rel->formato_info['nombre'] }}</small>
+                                        <small class="badge" style="background:#ede6dc; color:#3d3228 !important; border:1px solid #dcd3c7; font-weight:700;">{{ $rel->formato_info['nombre'] }}</small>
                                     </div>
                                     <small class="text-muted"><i class="fa fa-user mr-1"></i>{{ $rel->autores }}</small>
                                 </a>

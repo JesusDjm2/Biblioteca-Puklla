@@ -39,11 +39,11 @@ class TaqeTrabajo extends Model
     ];
 
     const FORMATOS = [
-        'pdf' => ['nombre' => 'Documento PDF', 'icono' => 'fa-file-pdf-o', 'color' => '#dc2626'],
-        'audio' => ['nombre' => 'Audio / Relato', 'icono' => 'fa-volume-up', 'color' => '#0284c7'],
-        'video' => ['nombre' => 'Video / Stopmotion', 'icono' => 'fa-video-camera', 'color' => '#7c3aed'],
-        'imagen' => ['nombre' => 'Cartilla / Gráfico', 'icono' => 'fa-picture-o', 'color' => '#059669'],
-        'multimedia' => ['nombre' => 'Multimedia mixto', 'icono' => 'fa-cubes', 'color' => '#d97706'],
+        'pdf' => ['nombre' => 'Documento PDF', 'icono' => 'fa-file-pdf-o', 'color' => '#b91c1c'],
+        'audio' => ['nombre' => 'Audio / Relato', 'icono' => 'fa-volume-up', 'color' => '#0369a1'],
+        'video' => ['nombre' => 'Video / Stopmotion', 'icono' => 'fa-video-camera', 'color' => '#6d28d9'],
+        'imagen' => ['nombre' => 'Cartilla / Gráfico', 'icono' => 'fa-picture-o', 'color' => '#047857'],
+        'multimedia' => ['nombre' => 'Multimedia mixto', 'icono' => 'fa-cubes', 'color' => '#b45309'],
     ];
 
     const IDIOMAS = [
