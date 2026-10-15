@@ -2,14 +2,9 @@
 @section('titulo', "- {$trabajo->titulo}")
 
 @section('estilos')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
-        .taqe-detail-header {
-            background: linear-gradient(135deg, #2a221b 0%, #17120e 100%);
-            color: #fff;
-            padding: 3rem 0 2.5rem;
-            border-bottom: 3px solid #c78e41;
-        }
-
         .taqe-badge-lg {
             padding: 0.35rem 0.85rem;
             border-radius: 6px;
@@ -18,24 +13,6 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-        }
-
-        .taqe-detail-title {
-            font-family: "Lato", system-ui, -apple-system, sans-serif;
-            font-size: clamp(1.4rem, 3.2vw, 2.2rem);
-            font-weight: 700;
-            color: #fff;
-            margin: 0.75rem 0 0.5rem;
-            line-height: 1.25;
-        }
-
-        .taqe-detail-authors {
-            font-size: 1.05rem;
-            color: #d8a562;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .taqe-card-box {
@@ -127,50 +104,40 @@
         $idm = $trabajo->idioma_info;
     @endphp
 
-    {{-- ═══ HEADER DEL DETALLE ═══ --}}
-    <div class="taqe-detail-header">
-        <div class="container">
-            {{-- Breadcrumb --}}
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb bg-transparent p-0 mb-3" style="font-size: 0.82rem;">
-                    <li class="breadcrumb-item"><a href="{{ route('index') }}" class="text-white-50">Inicio</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('taqe.index') }}" class="text-white-50">Taq'e</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('taqe.index', ['categoria_id' => $trabajo->categoria_id]) }}" class="text-white-50">{{ $trabajo->categoria->nombre ?? 'General' }}</a></li>
-                    <li class="breadcrumb-item active text-white" aria-current="page">{{ Str::limit($trabajo->titulo, 35) }}</li>
-                </ol>
-            </nav>
-
-            <div class="d-flex flex-wrap gap-2 mb-2">
-                <span class="taqe-badge-lg" style="background: {{ $fmt['color'] }}; color: #fff;">
-                    <i class="fa {{ $fmt['icono'] }}"></i> {{ $fmt['nombre'] }}
-                </span>
-                <span class="taqe-badge-lg" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff;">
-                    <i class="fa {{ $idm['icono'] }}"></i> {{ $idm['nombre'] }}
-                </span>
+    {{-- ===== HERO ===== --}}
+    <div class="lib-hero">
+        <img src="{{ $trabajo->portada_url }}" alt="{{ $trabajo->titulo }}" class="lib-hero__bg" loading="eager">
+        <div class="lib-hero__overlay"></div>
+        <div class="lib-hero__content">
+            <p class="lib-hero__eyebrow">ESPP Pukllasunchis · {{ $trabajo->categoria->nombre ?? 'Taq\'e' }}</p>
+            <h1 class="lib-hero__title lib-hero__title--cat">{{ $trabajo->titulo }}</h1>
+            <div class="lib-hero__divider"></div>
+            <div class="lib-hero__meta">
+                <span><i class="fa fa-user"></i> {{ $trabajo->autores }}</span>
+                <span><i class="fa {{ $fmt['icono'] }}"></i> {{ $fmt['nombre'] }}</span>
                 @if ($trabajo->año_periodo)
-                    <span class="taqe-badge-lg" style="background: rgba(255,255,255,0.1); color: #f5eedf;">
-                        <i class="fa fa-calendar"></i> {{ $trabajo->año_periodo }}
-                    </span>
+                    <span><i class="fa fa-calendar"></i> {{ $trabajo->año_periodo }}</span>
                 @endif
             </div>
-
-            <h1 class="taqe-detail-title">{{ $trabajo->titulo }}</h1>
-
-            <div class="taqe-detail-authors">
-                <i class="fa fa-user-circle"></i>
-                <span>Investigador(es): {{ $trabajo->autores }}</span>
-            </div>
-            @if ($trabajo->ciclo_carrera)
-                <p class="text-white-50 small mb-0 mt-1">
-                    <i class="fa fa-graduation-cap mr-1"></i>{{ $trabajo->ciclo_carrera }}
-                </p>
-            @endif
         </div>
     </div>
 
     {{-- ═══ BODY DEL DETALLE ═══ --}}
-    <div class="container py-4">
-        <div class="row">
+    <div class="container py-4 py-lg-5">
+
+        {{-- Breadcrumb --}}
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-white px-3 py-2 rounded border" style="font-size: 0.85rem;">
+                <li class="breadcrumb-item"><a href="{{ route('index') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('taqe.index') }}">Taq'e</a></li>
+                @if ($trabajo->categoria)
+                    <li class="breadcrumb-item"><a href="{{ route('taqe.index', ['categoria_id' => $trabajo->categoria_id]) }}">{{ $trabajo->categoria->nombre }}</a></li>
+                @endif
+                <li class="breadcrumb-item active" aria-current="page">{{ Str::limit($trabajo->titulo, 40) }}</li>
+            </ol>
+        </nav>
+
+        <div class="row g-4">
             {{-- Columna Principal: Recursos Multimedia & Descripción --}}
             <div class="col-lg-8">
                 
@@ -199,138 +166,167 @@
                     </div>
                 @endif
 
-                {{-- VISOR DE DOCUMENTO PDF (SI TIENE PDF) --}}
-                @if ($trabajo->pdf_url)
+                {{-- DESCRIPCIÓN / RESUMEN --}}
+                <div class="taqe-card-box">
+                    <h3 class="taqe-section-title">
+                        <i class="fa fa-align-left text-warning"></i> Resumen del trabajo
+                    </h3>
+                    @if ($trabajo->descripcion)
+                        <div style="font-size: 0.95rem; line-height: 1.7; color: #423b33;">
+                            {!! nl2br(e($trabajo->descripcion)) !!}
+                        </div>
+                    @else
+                        <p class="text-muted mb-0"><em>No se ha registrado una descripción detallada para este trabajo.</em></p>
+                    @endif
+                </div>
+
+                {{-- VISOR DE PDF EMBEBIDO O ACCIÓN DE DESCARGA --}}
+                @if ($trabajo->archivo_pdf)
                     <div class="taqe-card-box">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="taqe-section-title mb-0 border-0 p-0">
-                                <i class="fa fa-file-pdf-o text-danger"></i> Documento de investigación
+                            <h3 class="taqe-section-title mb-0 border-0 pb-0">
+                                <i class="fa fa-file-pdf text-danger"></i> Documento de investigación
                             </h3>
-                            <a href="{{ route('taqe.descargar', $trabajo->slug) }}" class="btn btn-sm btn-danger font-weight-bold" target="_blank">
+                            <a href="{{ route('taqe.descargar', $trabajo->slug) }}" class="btn btn-sm btn-outline-danger" target="_blank">
                                 <i class="fa fa-download mr-1"></i> Descargar PDF
                             </a>
                         </div>
-                        <iframe src="{{ $trabajo->pdf_url }}" class="taqe-pdf-frame"></iframe>
+                        <iframe src="{{ $trabajo->pdf_url }}#toolbar=1" class="taqe-pdf-frame"></iframe>
                     </div>
                 @endif
-
-                {{-- RESUMEN / DESCRIPCIÓN DEL TRABAJO --}}
-                <div class="taqe-card-box">
-                    <h3 class="taqe-section-title">
-                        <i class="fa fa-align-left text-warning"></i> Resumen de la investigación
-                    </h3>
-                    <div style="font-size: 0.98rem; line-height: 1.7; color: #3d352e;">
-                        @if ($trabajo->descripcion)
-                            {!! nl2br(e($trabajo->descripcion)) !!}
-                        @else
-                            <p class="text-muted italic">Este trabajo no cuenta con una descripción detallada registrada.</p>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- TRABAJOS RELACIONADOS --}}
-                @if ($relacionados->isNotEmpty())
-                    <div class="mt-4">
-                        <h4 class="font-weight-bold mb-3" style="color: #2a2520;">
-                            <i class="fa fa-book text-muted mr-1"></i> Otros trabajos en "{{ $trabajo->categoria->nombre }}"
-                        </h4>
-                        <div class="row">
-                            @foreach ($relacionados as $rel)
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden">
-                                        <img src="{{ $rel->portada_url }}" class="card-img-top" style="height: 120px; object-fit: cover;" alt="{{ $rel->titulo }}">
-                                        <div class="card-body p-3 d-flex flex-column">
-                                            <span class="badge badge-light border mb-1 align-self-start">{{ $rel->formato_info['nombre'] }}</span>
-                                            <h6 class="font-weight-bold mb-1">
-                                                <a href="{{ route('taqe.show', $rel->slug) }}" class="text-dark text-decoration-none">
-                                                    {{ Str::limit($rel->titulo, 45) }}
-                                                </a>
-                                            </h6>
-                                            <p class="small text-muted mb-0 mt-auto">{{ $rel->autores }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
             </div>
 
-            {{-- Columna Lateral: Ficha Técnica e Información --}}
+            {{-- Columna Lateral: Ficha Técnica & Trabajos Relacionados --}}
             <div class="col-lg-4">
+                
+                {{-- Ficha Técnica --}}
                 <div class="taqe-card-box">
                     <h3 class="taqe-section-title">
-                        <i class="fa fa-info-circle text-primary"></i> Ficha del Trabajo
+                        <i class="fa fa-info-circle text-primary"></i> Ficha del trabajo
                     </h3>
 
                     <div class="taqe-meta-item">
-                        <span class="taqe-meta-label">Categoría / Eje:</span>
-                        <span class="taqe-meta-val">{{ $trabajo->categoria->nombre ?? 'General' }}</span>
-                    </div>
-
-                    <div class="taqe-meta-item">
-                        <span class="taqe-meta-label">Formato:</span>
+                        <span class="taqe-meta-label">Categoría</span>
                         <span class="taqe-meta-val">
-                            <i class="fa {{ $fmt['icono'] }}"></i> {{ $fmt['nombre'] }}
+                            <a href="{{ route('taqe.index', ['categoria_id' => $trabajo->categoria_id]) }}">
+                                {{ $trabajo->categoria->nombre ?? 'General' }}
+                            </a>
                         </span>
                     </div>
 
                     <div class="taqe-meta-item">
-                        <span class="taqe-meta-label">Idioma:</span>
+                        <span class="taqe-meta-label">Formato</span>
+                        <span class="taqe-meta-val">
+                            <span class="badge" style="background: {{ $fmt['color'] }}; color: #fff;">
+                                <i class="fa {{ $fmt['icono'] }}"></i> {{ $fmt['nombre'] }}
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="taqe-meta-item">
+                        <span class="taqe-meta-label">Lengua / Idioma</span>
                         <span class="taqe-meta-val">{{ $idm['nombre'] }}</span>
                     </div>
 
                     @if ($trabajo->año_periodo)
                         <div class="taqe-meta-item">
-                            <span class="taqe-meta-label">Año / Periodo:</span>
+                            <span class="taqe-meta-label">Año / Periodo</span>
                             <span class="taqe-meta-val">{{ $trabajo->año_periodo }}</span>
                         </div>
                     @endif
 
                     @if ($trabajo->ciclo_carrera)
                         <div class="taqe-meta-item">
-                            <span class="taqe-meta-label">Ciclo / Formación:</span>
+                            <span class="taqe-meta-label">Ciclo / Especialidad</span>
                             <span class="taqe-meta-val">{{ $trabajo->ciclo_carrera }}</span>
                         </div>
                     @endif
 
                     <div class="taqe-meta-item">
-                        <span class="taqe-meta-label">Visualizaciones:</span>
-                        <span class="taqe-meta-val">{{ number_format($trabajo->vistas) }}</span>
+                        <span class="taqe-meta-label">Vistas</span>
+                        <span class="taqe-meta-val"><i class="fa fa-eye mr-1 text-muted"></i>{{ number_format($trabajo->vistas) }}</span>
                     </div>
 
-                    @if ($trabajo->descargas > 0)
-                        <div class="taqe-meta-item">
-                            <span class="taqe-meta-label">Descargas de PDF:</span>
-                            <span class="taqe-meta-val">{{ number_format($trabajo->descargas) }}</span>
-                        </div>
-                    @endif
+                    <div class="taqe-meta-item">
+                        <span class="taqe-meta-label">Descargas</span>
+                        <span class="taqe-meta-val"><i class="fa fa-download mr-1 text-muted"></i>{{ number_format($trabajo->descargas) }}</span>
+                    </div>
 
-                    @if ($trabajo->archivo_pdf)
-                        <div class="mt-3 pt-3 border-top">
-                            <a href="{{ route('taqe.descargar', $trabajo->slug) }}"
-                               class="btn btn-danger btn-block font-weight-bold" target="_blank">
+                    {{-- Acciones principales --}}
+                    <div class="mt-4 pt-2">
+                        @if ($trabajo->archivo_pdf)
+                            <a href="{{ route('taqe.descargar', $trabajo->slug) }}" class="btn btn-danger btn-block w-100 mb-2">
                                 <i class="fa fa-download mr-1"></i> Descargar Documento (PDF)
                             </a>
-                        </div>
-                    @endif
+                        @endif
 
-                    <div class="mt-3">
-                        <a href="{{ route('taqe.index') }}" class="btn btn-outline-secondary btn-block">
-                            <i class="fa fa-arrow-left mr-1"></i> Volver al Taq'e
+                        @if ($trabajo->audio_url)
+                            <a href="{{ $trabajo->audio_url }}" download class="btn btn-outline-info btn-block w-100 mb-2">
+                                <i class="fa fa-volume-up mr-1"></i> Descargar Audio
+                            </a>
+                        @endif
+
+                        <a href="{{ route('taqe.index') }}" class="btn btn-outline-secondary btn-block w-100">
+                            <i class="fa fa-arrow-left mr-1"></i> Volver al repositorio
                         </a>
                     </div>
                 </div>
 
-                {{-- Banner Institucional Pukllasunchis --}}
-                <div class="card border-0 text-white rounded-lg p-3" style="background: linear-gradient(135deg, #8c581e 0%, #5c3a13 100%);">
-                    <h6 class="font-weight-bold mb-1"><i class="fa fa-graduation-cap mr-1"></i> EESP Pukllasunchis</h6>
-                    <p class="small mb-0 text-white-50">
-                        Formación docente inicial con identidad cultural, bilingüismo y valoración de los saberes comunitarios.
-                    </p>
-                </div>
+                {{-- Trabajos Relacionados --}}
+                @if ($relacionados->isNotEmpty())
+                    <div class="taqe-card-box">
+                        <h3 class="taqe-section-title">
+                            <i class="fa fa-bookmark text-success"></i> Trabajos relacionados
+                        </h3>
+
+                        <div class="list-group list-group-flush">
+                            @foreach ($relacionados as $rel)
+                                <a href="{{ route('taqe.show', $rel->slug) }}" class="list-group-item list-group-item-action px-0 border-bottom py-2">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <h6 class="mb-1 text-truncate" style="max-width: 80%; font-size: 0.9rem;" title="{{ $rel->titulo }}">
+                                            {{ $rel->titulo }}
+                                        </h6>
+                                        <small class="badge badge-light border">{{ $rel->formato_info['nombre'] }}</small>
+                                    </div>
+                                    <small class="text-muted"><i class="fa fa-user mr-1"></i>{{ $rel->autores }}</small>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>
+
+    {{-- Script de reveal con GSAP --}}
+    <script>
+    (function () {
+        if (typeof gsap === 'undefined') return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        /* ---- Hero parallax ---- */
+        gsap.to('.lib-hero__bg', {
+            y: '20%',
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.lib-hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 1.2
+            }
+        });
+
+        /* ---- Hero text reveal ---- */
+        gsap.set('.lib-hero__eyebrow', { y: 24 });
+        gsap.set('.lib-hero__title',   { y: 32 });
+        gsap.set('.lib-hero__meta',    { y: 18 });
+
+        gsap.timeline({ defaults: { ease: 'power3.out' } })
+            .to('.lib-hero__eyebrow', { opacity: 1, y: 0, duration: .8 }, .25)
+            .to('.lib-hero__title',   { opacity: 1, y: 0, duration: .9 }, .45)
+            .to('.lib-hero__divider', { width: 56, duration: .55 }, .85)
+            .to('.lib-hero__meta',    { opacity: 1, y: 0, duration: .6 }, 1.05);
+    })();
+    </script>
 @endsection
