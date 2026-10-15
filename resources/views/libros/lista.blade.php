@@ -22,6 +22,20 @@
                 <span><i class="fa fa-book-open"></i> {{ $libros->count() }} textos recientes</span>
                 <span><i class="fa fa-layer-group"></i> {{ $secciones->count() }} secciones</span>
             </div>
+            <div class="mt-3">
+                <a href="{{ route('catalogo-fisico') }}"
+                   style="display:inline-flex;align-items:center;gap:.45rem;
+                          background:rgba(255,255,255,.15);backdrop-filter:blur(6px);
+                          border:1px solid rgba(255,255,255,.35);border-radius:999px;
+                          color:#fff;font-size:.82rem;font-weight:600;
+                          padding:.45rem 1.1rem;text-decoration:none;
+                          transition:background .2s,transform .18s;"
+                   onmouseover="this.style.background='rgba(255,255,255,.28)';this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.background='rgba(255,255,255,.15)';this.style.transform=''">
+                    <i class="fa fa-book"></i> Ver Biblioteca Física
+                    <i class="fa fa-arrow-right" style="font-size:.72rem;opacity:.8;"></i>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -107,14 +121,14 @@
                                 <div class="lib-book-card__cover">
                                     <img src="{{ $urlVistaPrevia }}" alt="{{ $libro->nombre }}" loading="lazy">
                                     <div class="lib-book-card__overlay">
-                                        <a href="https://drive.google.com/file/d/{{ $libro->identificador }}/view"
-                                            target="_blank" rel="noopener" class="lib-book-card__btn">
-                                            <i class="fab fa-google-drive"></i> Abrir PDF
-                                        </a>
+                                        <button type="button" class="lib-book-card__btn"
+                                            onclick="abrirVistaPreviaLibro({{ \Illuminate\Support\Js::from($libro->identificador) }}, {{ \Illuminate\Support\Js::from($libro->nombre) }})">
+                                            <i class="fa fa-eye"></i> Vista previa
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="lib-book-card__info">
-                                    <h3 class="lib-book-card__title">{{ $libro->nombre }}</h3>
+                                    <h3 class="lib-book-card__title" title="{{ $libro->nombre }}">{{ $libro->nombre }}</h3>
                                     <p class="lib-book-card__author">
                                         <i class="fa fa-user"></i> {{ $libro->autor }}
                                     </p>
@@ -145,15 +159,10 @@
             });
 
             /* ---- Hero text reveal ---- */
-            gsap.set('.lib-hero__eyebrow', {
-                y: 24
-            });
-            gsap.set('.lib-hero__title', {
-                y: 32
-            });
-            gsap.set('.lib-hero__meta', {
-                y: 18
-            });
+            gsap.set('.lib-hero__eyebrow', { y: 24 });
+            gsap.set('.lib-hero__title',   { y: 32 });
+            gsap.set('.lib-hero__meta',    { y: 18 });
+            gsap.set('.lib-hero__content .mt-3', { opacity: 0, y: 14 });
 
             gsap.timeline({
                     defaults: {
@@ -178,7 +187,12 @@
                     opacity: 1,
                     y: 0,
                     duration: .6
-                }, 1.05);
+                }, 1.05)
+                .to('.lib-hero__content .mt-3', {
+                    opacity: 1,
+                    y: 0,
+                    duration: .5
+                }, 1.25);
 
             /* ---- Cards scroll-reveal (solo y, sin opacity para evitar transparencias) ---- */
             gsap.from('.lib-book-col', {

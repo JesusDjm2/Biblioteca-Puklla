@@ -8,6 +8,9 @@ use App\Http\Controllers\CancionesController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\EnlacesController;
 use App\Http\Controllers\LibroController;
+use App\Http\Controllers\CategoriaMaterialDidacticoController;
+use App\Http\Controllers\MaterialDidacticoController;
+use App\Http\Controllers\PrestamoController;
 use App\Http\Controllers\SeccionController;
 use App\Http\Controllers\VideoCategoriaController;
 use App\Http\Controllers\VideoController;
@@ -36,6 +39,17 @@ Route::middleware(['auth', 'role:admin|biblioteca'])->prefix('biblioteca-fisica'
         ->parameters(['categorias' => 'categoria_fisica']);
     Route::resource('libros', LibroFisicoController::class)->except(['show'])
         ->parameters(['libros' => 'libro_fisico']);
+    Route::get('libros-buscar-ajax', [LibroFisicoController::class, 'buscarAjax'])
+        ->name('libros.buscar-ajax');
+    Route::resource('prestamos', PrestamoController::class)->except(['show']);
+    Route::patch('prestamos/{prestamo}/devolver', [PrestamoController::class, 'devolver'])
+        ->name('prestamos.devolver');
+    Route::resource('material-categorias', CategoriaMaterialDidacticoController::class)->except(['show'])
+        ->parameters(['material-categorias' => 'material_categoria']);
+    Route::resource('materiales', MaterialDidacticoController::class)->except(['show'])
+        ->parameters(['materiales' => 'material']);
+    Route::get('materiales-buscar-ajax', [MaterialDidacticoController::class, 'buscarAjax'])
+        ->name('materiales.buscar-ajax');
 });
 
 //Biblioteca (público)
@@ -53,6 +67,10 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('libros/create/{categoria?}', [LibroController::class, 'create'])->name('libros.create');
 Route::get('Lista-de-Libros', [LibroController::class, 'libros'])->name('libros');
+Route::get('catalogo-fisico', [LibroFisicoController::class, 'catalogo'])->name('catalogo-fisico');
+Route::get('api/codigo-fisico/sugerir', [LibroFisicoController::class, 'sugerirCodigo'])
+    ->name('libros-fisicos.sugerir-codigo')
+    ->middleware('auth');
 
 //Videos (público)
 Route::resource('Videos', VideoController::class)->names('videos');
@@ -74,11 +92,12 @@ Route::get('/limpiar-cache', function() {
     Artisan::call('route:clear');
     return "Cache limpiada correctamente";
 });
+
 /* Route::get('migrar', function(){
-    Artisan::call('migrate');
-    return "migración corrió correctamente!";
-});
-Route::get('migrarRollback', function(){
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    return nl2br("Migración:\n" . \Illuminate\Support\Facades\Artisan::output());
+}); */
+/* Route::get('migrarRollback', function(){
     Artisan::call('migrate:rollback');
     return "rollback corrió correctamente!";
 });

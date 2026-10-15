@@ -2,7 +2,7 @@
     $active = $active ?? '';
     $tabs = [
         'secciones' => ['label' => 'Secciones', 'route' => route('secciones.index')],
-        'categorias' => ['label' => 'Categorías', 'route' => route('categorias.index')],        
+        'categorias' => ['label' => 'Categorías', 'route' => route('categorias.index')],
         'libros' => ['label' => 'Libros', 'route' => route('libros.index')],
     ];
 @endphp
@@ -13,4 +13,19 @@
                 class="bv-crud-tab {{ $active === $key ? 'is-active' : '' }}">{{ $t['label'] }}</a>
         @endforeach
     </div>
+    @if (!empty($stats) || !empty($botones))
+        <div class="bv-crud-nav-actions">
+            @foreach ($stats ?? [] as $stat)
+                <span class="bv-crud-nav-count {{ $stat['tono'] ?? '' }}">
+                    <i class="fa {{ $stat['icono'] ?? 'fa-hashtag' }}"></i>
+                    {{ number_format($stat['valor']) }} {{ $stat['valor'] === 1 ? $stat['singular'] : $stat['plural'] }}
+                </span>
+            @endforeach
+            @foreach ($botones ?? [] as $boton)
+                <a href="{{ $boton['route'] }}" class="btn btn-sm {{ $boton['clase'] ?? 'btn-info' }}">
+                    <i class="fa {{ $boton['icono'] ?? 'fa-plus' }} mr-1"></i>{{ $boton['label'] }}
+                </a>
+            @endforeach
+        </div>
+    @endif
 </nav>

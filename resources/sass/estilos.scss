@@ -2,7 +2,7 @@ $color-principal: #cb9042;
 $color-fondo: #f2f2f2;
 $color-texto: #333;
 $color-borde: #c88e4133;
-$font-family: "EB Garamond", system-ui, -apple-system, sans-serif;
+$font-family: "Lato", system-ui, -apple-system, sans-serif;
 $transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 $header-height: 5em;
 $sidebar-width: 300px;
@@ -14,7 +14,7 @@ body {
 }
 
 h2 {
-    font-family: "EB Garamond", system-ui, -apple-system;
+    font-family: "Lato", system-ui, -apple-system, sans-serif;
 }
 
 .menuPuklla {
@@ -418,7 +418,31 @@ body.search-open {
     position: relative;
     width: 100%;
     height: 60vh;
+    min-height: 340px;
     overflow: hidden;
+
+    @media (max-width: 767px) {
+        height: 65vh;
+        min-height: 420px;
+    }
+
+    @media (max-width: 480px) {
+        height: 70vh;
+        min-height: 460px;
+    }
+
+    body.has-hero-nav & {
+        margin-top: -$header-height;
+        height: calc(60vh + #{$header-height});
+
+        @media (max-width: 767px) {
+            height: calc(65vh + #{$header-height});
+        }
+
+        @media (max-width: 480px) {
+            height: calc(70vh + #{$header-height});
+        }
+    }
 
     .overlay {
         position: absolute;
@@ -440,21 +464,42 @@ body.search-open {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 700px;
+        padding: 0 15px;
+        box-sizing: border-box;
         text-align: center;
         color: white;
         z-index: 1;
 
         h1,
         h2 {
-            font-family: "EB Garamond", system-ui, -apple-system;
+            font-family: "Lato", system-ui, -apple-system, sans-serif;
         }
 
         h1 {
             font-size: 52px;
+
+            @media (max-width: 767px) {
+                font-size: 38px;
+            }
+
+            @media (max-width: 480px) {
+                font-size: 28px;
+            }
         }
 
         h2 {
             position: relative;
+            font-size: 28px;
+
+            @media (max-width: 767px) {
+                font-size: 22px;
+            }
+
+            @media (max-width: 480px) {
+                font-size: 19px;
+            }
 
             &::after {
                 content: "";
@@ -465,12 +510,20 @@ body.search-open {
                 margin: 10px auto 0; // Margen superior ajustable
             }
         }
+
+        p {
+            font-size: 15px;
+
+            @media (max-width: 480px) {
+                font-size: 13px;
+            }
+        }
     }
 }
 
 .cardVideos {
-    background: #474747;
-    color: #fff;
+    background: transparent;
+    color: #000;
     border-radius: 5px;
     transition: 0.4s ease;
     overflow: hidden;
@@ -551,7 +604,7 @@ body.search-open {
                 transform: translate(-50%, -50%);
                 z-index: 4;
                 font-size: 25px;
-                font-family: "EB Garamond", system-ui, -apple-system;
+                font-family: "Lato", system-ui, -apple-system, sans-serif;
             }
 
             a {
@@ -853,7 +906,7 @@ body.search-open {
         color: #fff;
         text-transform: uppercase;
         font-size: 18px;
-        font-family: "EB Garamond", system-ui, -apple-system;
+        font-family: "Lato", system-ui, -apple-system, sans-serif;
         position: relative;
         margin-bottom: 1.8em;
 
@@ -899,6 +952,175 @@ body.search-open {
                     color: #fff;
                 }
             }
+        }
+    }
+}
+
+.puklla-footer {
+    background: #1a1712;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 4em 0 0;
+    font-family: system-ui, -apple-system, sans-serif;
+
+    a {
+        text-decoration: none;
+        color: inherit;
+        transition: color 0.3s ease;
+    }
+
+    &__top {
+        padding-bottom: 2.5em;
+    }
+
+    &__brand {
+        display: inline-block;
+        margin-bottom: 1.2em;
+
+        img {
+            display: block;
+        }
+    }
+
+    &__tagline {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 15px;
+        line-height: 1.6;
+        max-width: 320px;
+        margin-bottom: 1.4em;
+    }
+
+    &__contact {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 0.8em;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        i {
+            color: $color-principal;
+            margin-top: 3px;
+            width: 16px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        a {
+            color: rgba(255, 255, 255, 0.65);
+
+            &:hover {
+                color: $color-principal;
+            }
+        }
+    }
+
+    &__heading {
+        color: $color-principal;
+        text-transform: uppercase;
+        font-size: 16px;
+        letter-spacing: 0.04em;
+        font-weight: 700;
+        position: relative;
+        margin-bottom: 1.6em;
+        padding-bottom: 0.6em;
+
+        &::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 32px;
+            height: 2px;
+            background: $color-principal;
+        }
+    }
+
+    &__links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            margin-bottom: 0.7em;
+        }
+
+        a {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+
+            &:hover {
+                color: $color-principal;
+            }
+        }
+
+        &--static li {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+    }
+
+    &__social {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 0.7em;
+
+        a {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: 0.3s ease;
+
+            &:hover {
+                background: $color-principal;
+                border-color: $color-principal;
+                color: #1a1712;
+                transform: translateY(-2px);
+            }
+        }
+    }
+
+    &__bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.4em 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em 1.5em;
+        justify-content: space-between;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+
+        a {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+
+            &:hover {
+                color: $color-principal;
+            }
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    @media (max-width: 767px) {
+        &__bottom {
+            justify-content: center;
+            text-align: center;
         }
     }
 }

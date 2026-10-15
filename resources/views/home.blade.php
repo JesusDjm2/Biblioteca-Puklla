@@ -25,6 +25,7 @@
     }
     .icon-virtual { background: rgba(23, 162, 184, 0.12); color: #17a2b8; }
     .icon-fisica { background: rgba(108, 117, 125, 0.12); color: #6c757d; }
+    .icon-prestamos { background: rgba(111, 66, 193, 0.12); color: #6f42c1; }
     .icon-videos { background: rgba(220, 53, 69, 0.12); color: #dc3545; }
     .icon-canciones { background: rgba(40, 167, 69, 0.12); color: #28a745; }
     .icon-usuarios { background: rgba(0, 123, 255, 0.12); color: #007bff; }
@@ -44,6 +45,7 @@
     .badge-secciones { background: #e8f7fa; color: #138496; }
     .badge-categorias { background: #fff3cd; color: #856404; }
     .badge-registros { background: #d4edda; color: #155724; }
+    .badge-atrasados { background: #f8d7da; color: #a71d2a; }
 </style>
 @endpush
 
@@ -122,6 +124,38 @@
                                     <span class="stat-badge badge-registros" title="Ejemplares físicos">
                                         <i class="fa fa-file-signature"></i> {{ $stats['libros_fisicos'] }} textos
                                     </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endif
+
+            {{-- MÓDULO: PRÉSTAMOS --}}
+            @if ($isAdmin || $isBiblioteca)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <a href="{{ route('biblioteca-fisica.prestamos.index') }}" class="text-decoration-none text-dark d-block h-100">
+                        <div class="card h-100 shadow-sm border-0 dash-card">
+                            <div class="card-body d-flex flex-column justify-content-between p-4">
+                                <div>
+                                    <div class="dash-icon-circle icon-prestamos">
+                                        <i class="fa fa-hand-holding"></i>
+                                    </div>
+                                    <h5 class="font-weight-bold text-dark mb-2">Préstamos</h5>
+                                    <p class="small text-muted mb-4">Registra y controla los préstamos de libros físicos: entregas, devoluciones y atrasos.</p>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="stat-badge badge-registros" title="Préstamos registrados">
+                                        <i class="fa fa-list"></i> {{ $stats['prestamos_total'] }} registros
+                                    </span>
+                                    <span class="stat-badge badge-secciones" title="Préstamos activos">
+                                        <i class="fa fa-hand-holding"></i> {{ $stats['prestamos_activos'] }} activos
+                                    </span>
+                                    @if ($stats['prestamos_atrasados'] > 0)
+                                        <span class="stat-badge badge-atrasados" title="Préstamos atrasados">
+                                            <i class="fa fa-exclamation-triangle"></i> {{ $stats['prestamos_atrasados'] }} atrasados
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

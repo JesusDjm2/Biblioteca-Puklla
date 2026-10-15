@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoriaFisica;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoriaFisicaController extends Controller
 {
@@ -35,10 +36,11 @@ class CategoriaFisicaController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'codigo' => 'nullable|string|max:50|unique:categorias_fisicas,codigo',
             'descripcion' => 'nullable|string|max:2000',
         ]);
 
-        CategoriaFisica::create($request->only(['nombre', 'descripcion']));
+        CategoriaFisica::create($request->only(['nombre', 'codigo', 'descripcion']));
 
         return redirect()->route('biblioteca-fisica.categorias.index')
             ->with('success', 'Categoría creada correctamente.');
@@ -53,10 +55,11 @@ class CategoriaFisicaController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'codigo' => ['nullable', 'string', 'max:50', Rule::unique('categorias_fisicas', 'codigo')->ignore($categoria_fisica->id)],
             'descripcion' => 'nullable|string|max:2000',
         ]);
 
-        $categoria_fisica->update($request->only(['nombre', 'descripcion']));
+        $categoria_fisica->update($request->only(['nombre', 'codigo', 'descripcion']));
 
         return redirect()->route('biblioteca-fisica.categorias.index')
             ->with('success', 'Categoría actualizada correctamente.');

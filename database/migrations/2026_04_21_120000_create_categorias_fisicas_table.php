@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('categorias_fisicas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('codigo_dewey')->unique();
             $table->text('descripcion')->nullable();
             $table->timestamps();
         });

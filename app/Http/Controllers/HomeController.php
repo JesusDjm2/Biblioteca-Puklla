@@ -12,6 +12,7 @@ use App\Models\Video;
 use App\Models\VideoCategoria;
 use App\Models\Canciones;
 use App\Models\CancionesCategoria;
+use App\Models\Prestamo;
 
 class HomeController extends Controller
 {
@@ -42,6 +43,9 @@ class HomeController extends Controller
             'videos' => Video::count(),
             'canciones_categorias' => CancionesCategoria::count(),
             'canciones' => Canciones::count(),
+            'prestamos_total' => Prestamo::count(),
+            'prestamos_activos' => Prestamo::activos()->count(),
+            'prestamos_atrasados' => Prestamo::atrasados()->count(),
         ];
 
         return view('home', compact('stats'));

@@ -38,18 +38,32 @@
                 <i class="fa fa-tag mr-1"></i>Datos de la categoría
             </div>
 
-            <div class="form-group">
-                <label class="bv-form-label" for="nombre">
-                    Nombre <span class="text-danger">*</span>
-                </label>
-                <input type="text" name="nombre" id="nombre"
-                    class="form-control form-control-sm @error('nombre') is-invalid @enderror"
-                    value="{{ old('nombre') }}" required maxlength="120"
-                    placeholder="Ej: Literatura, Ciencias, Historia…" autofocus>
-                <div class="bv-char-counter" id="nombreCounter">0 / 120</div>
-                @error('nombre')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label class="bv-form-label" for="nombre">
+                        Nombre <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" name="nombre" id="nombre"
+                        class="form-control form-control-sm @error('nombre') is-invalid @enderror"
+                        value="{{ old('nombre') }}" required maxlength="120"
+                        placeholder="Ej: Literatura, Ciencias, Historia…" autofocus>
+                    <div class="bv-char-counter" id="nombreCounter">0 / 120</div>
+                    @error('nombre')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="bv-form-label" for="codigo">
+                        Código <small class="text-muted font-weight-normal">(opcional)</small>
+                    </label>
+                    <input type="text" name="codigo" id="codigo"
+                        class="form-control form-control-sm @error('codigo') is-invalid @enderror"
+                        value="{{ old('codigo') }}" maxlength="50"
+                        placeholder="Ej: LIT-01">
+                    @error('codigo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <div class="form-group mb-0">
@@ -81,6 +95,7 @@
 @push('scripts')
 <script>
     (function () {
+        window.bvPageAnimated = true;
         gsap.from('#bvCardCat', { opacity: 0, y: 22, duration: 0.4, ease: 'power2.out' });
 
         function attachCounter(inputId, counterId, max) {
