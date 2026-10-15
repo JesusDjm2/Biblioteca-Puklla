@@ -88,10 +88,10 @@
             <div class="form-group col-md-2 mb-0">
                 <label class="small mb-1 d-block invisible" aria-hidden="true">Acciones</label>
                 <div class="btn-group btn-group-sm bv-toolbar-btn-group w-100">
-                    <button type="submit" class="btn btn-info">
+                    <button type="submit" class="btn btn-sm btn-info">
                         <i class="fa fa-filter mr-1"></i>Filtrar
                     </button>
-                    <a href="{{ route('biblioteca-fisica.prestamos.index') }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('biblioteca-fisica.prestamos.index') }}" class="btn btn-sm btn-outline-secondary">
                         Limpiar
                     </a>
                 </div>

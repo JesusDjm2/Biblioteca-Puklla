@@ -456,28 +456,85 @@ a:hover .flecha-admin {
     border-radius: 6px;
 }
 
-/* Buscador + selects + botones del toolbar comparten la misma altura exacta,
-   así el filtro nunca se ve "escalonado" sin importar si es texto, select o botón.
-   Se fija todo el modelo de caja (no solo height) y con !important porque el
-   tema admin (admin/css/style.css) también define .form-control con su propio
-   padding/line-height y puede ganarle a una regla sin !important según el orden
-   de carga de las hojas de estilo. */
+/* Buscador + selects + botones del toolbar comparten exactamente la misma altura (38px),
+   eliminando cualquier desnivel o escalón entre inputs, selects y botones en todos los navegadores.
+   Se fijan altura, padding, line-height y box-sizing con !important para anular estilos del tema admin. */
+.bv-crud-toolbar .form-control,
+.bv-crud-toolbar .custom-select,
+.bv-crud-toolbar select,
+.bv-crud-toolbar input[type="text"],
+.bv-crud-toolbar input[type="search"],
+.bv-crud-toolbar .input-group-text,
+.bv-crud-toolbar .input-group > .form-control,
+.bv-crud-toolbar .btn:not(.btn-link),
 .bv-toolbar-control,
+.bv-toolbar-btn-group,
 .bv-toolbar-btn-group .btn {
     box-sizing: border-box !important;
-    height: calc(1.5em + 0.5rem + 2px) !important;
-    min-height: calc(1.5em + 0.5rem + 2px) !important;
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.25rem !important;
-    line-height: 1.5 !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
     font-size: 0.875rem !important;
     border-width: 1px !important;
 }
 
+.bv-crud-toolbar .form-control,
+.bv-crud-toolbar .custom-select,
+.bv-crud-toolbar select,
+.bv-crud-toolbar input[type="text"],
+.bv-crud-toolbar input[type="search"],
+.bv-toolbar-control {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    line-height: 1.5 !important;
+}
+
+.bv-crud-toolbar .btn:not(.btn-link),
 .bv-toolbar-btn-group .btn {
-    display: inline-flex;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1 !important;
+}
+
+.bv-crud-toolbar .input-group-text {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Select2 integrado al toolbar con exactamente 38px de altura */
+.bv-crud-toolbar .select2-container .select2-selection--single {
+    box-sizing: border-box !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+.bv-crud-toolbar .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 36px !important;
+    font-size: 0.875rem !important;
+    padding-left: 0.65rem !important;
+}
+.bv-crud-toolbar .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+    top: 1px !important;
+    right: 4px !important;
+}
+
+/* Alineación y altura unificada de etiquetas en el toolbar */
+.bv-crud-toolbar label.bv-toolbar-label,
+.bv-crud-toolbar .bv-toolbar-label-wrap {
+    height: 20px;
+    display: flex;
     align-items: center;
-    justify-content: center;
+    margin-bottom: 0.35rem !important;
 }
 
 .bv-crud-page-title {

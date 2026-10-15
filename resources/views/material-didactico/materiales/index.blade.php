@@ -53,14 +53,14 @@
             <form method="get" action="{{ route('biblioteca-fisica.materiales.index') }}" class="bv-crud-toolbar" id="filterFormMateriales">
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-5 mb-2 mb-md-0">
-                        <label for="md-q" class="small text-muted mb-1 d-block">
+                        <label for="md-q" class="small text-muted bv-toolbar-label">
                             <i class="fa fa-search mr-1"></i>Buscar
                         </label>
                         <input type="text" id="md-q" name="q" class="form-control form-control-sm bv-toolbar-control"
                             value="{{ request('q') }}" placeholder="Nombre, código o descripción…" autocomplete="off">
                     </div>
                     <div class="form-group col-md-4 mb-2 mb-md-0">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="bv-toolbar-label-wrap justify-content-between">
                             <label for="md-cat" class="small text-muted mb-0">
                                 <i class="fa fa-folder mr-1"></i>Filtrar por Categoría
                             </label>
@@ -78,13 +78,13 @@
                         </select>
                     </div>
                     <div class="form-group col-md-3 mb-0">
-                        <label class="small mb-1 d-block invisible" aria-hidden="true">Acciones</label>
+                        <label class="small bv-toolbar-label invisible" aria-hidden="true">Acciones</label>
                         <div class="btn-group btn-group-sm bv-toolbar-btn-group w-100">
-                            <button type="submit" class="btn btn-info">
+                            <button type="submit" class="btn btn-sm btn-info">
                                 <i class="fa fa-filter mr-1"></i>Filtrar
                             </button>
                             <a href="{{ route('biblioteca-fisica.materiales.index') }}"
-                                class="btn btn-outline-secondary">Limpiar</a>
+                                class="btn btn-sm btn-outline-secondary">Limpiar</a>
                         </div>
                     </div>
                 </div>
