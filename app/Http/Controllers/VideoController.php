@@ -36,10 +36,14 @@ class VideoController extends Controller
             default => null,
         };
 
-        $videos = $query->paginate(25)->withQueryString();
+        // Filtrando solo por categoría se puede reordenar arrastrando: se muestran
+        // todos sus videos en una página para poder llevar cualquiera a cualquier posición.
+        $modoOrden = $request->filled('categoria_id') && ! $request->filled('q') && ! $request->filled('fuente');
+
+        $videos = $query->paginate($modoOrden ? 1000 : 25)->withQueryString();
         $categorias = VideoCategoria::orderBy('nombre')->get();
 
-        return view('videos.index', compact('videos', 'categorias'));
+        return view('videos.index', compact('videos', 'categorias', 'modoOrden'));
     }
 
     public function create(Request $request)

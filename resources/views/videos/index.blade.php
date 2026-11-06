@@ -49,11 +49,21 @@
         </div>
     </form>
 
-    @if (request('categoria_id') && $videos->total() > 1)
+    @if ($modoOrden && $videos->total() > 1)
         <div class="alert bv-alert alert-light d-flex flex-wrap align-items-center justify-content-between" style="gap:.5rem;">
-            <span class="small"><i class="fa fa-sort mr-1"></i> Los videos de esta categoría se muestran en su orden de reproducción en la web.</span>
-            <a href="{{ route('videoscat.ordenar', request('categoria_id')) }}" class="btn btn-sm btn-outline-info"><i class="fa fa-sort mr-1"></i>Cambiar orden</a>
+            <span class="small">
+                <i class="fa fa-arrows-v mr-1"></i> <strong>Arrastra</strong> cada video desde <i class="fa fa-bars"></i> para cambiar el orden en que se ve y reproduce en la web.
+                Se guarda solo al soltar.
+            </span>
+            <span class="d-flex align-items-center" style="gap:.5rem;">
+                <span class="vo-estado small" id="vo-estado" aria-live="polite"></span>
+                <a href="{{ route('videoscat.ordenar', request('categoria_id')) }}" class="btn btn-sm btn-outline-info" title="Ordenar por nombre, fecha o vistas">
+                    <i class="fa fa-magic mr-1"></i>Ordenar rápido
+                </a>
+            </span>
         </div>
+    @elseif (!request('categoria_id') && $videos->total() > 1)
+        <p class="small text-muted mb-2"><i class="fa fa-info-circle mr-1"></i> Para cambiar el orden de los videos, elige una <strong>categoría</strong> en el filtro y arrástralos.</p>
     @endif
 
     @if ($videos->total() > 0)
@@ -66,6 +76,7 @@
         <table class="table table-hover table-sm">
             <thead class="thead-light">
                 <tr>
+                    @if ($modoOrden)<th style="width:2.2rem;" aria-label="Mover"></th>@endif
                     <th style="width:3rem;">#</th>
                     <th>Nombre</th>
                     <th>Categoría</th>
@@ -74,10 +85,13 @@
                     <th style="width:8rem;" class="text-center">Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody @if ($modoOrden) id="vo-lista" @endif>
                 @forelse ($videos as $video)
-                    <tr class="bv-table-row">
-                        <td class="text-muted small align-middle">{{ $videos->firstItem() + $loop->index }}</td>
+                    <tr class="bv-table-row" data-id="{{ $video->id }}">
+                        @if ($modoOrden)
+                            <td class="align-middle text-center vo-asa" title="Arrastrar para cambiar el orden"><i class="fa fa-bars"></i></td>
+                        @endif
+                        <td class="text-muted small align-middle vo-num">{{ $videos->firstItem() + $loop->index }}</td>
                         <td class="align-middle">
                             <div class="font-weight-bold">{{ $video->nombre }}</div>
                             @if ($video->descripcion)
@@ -129,7 +143,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="p-0 border-0">
+                        <td colspan="{{ $modoOrden ? 7 : 6 }}" class="p-0 border-0">
                             <div class="bv-empty-state">
                                 <i class="fa fa-film bv-empty-icon"></i>
                                 <p>No se encontraron videos.</p>
@@ -171,15 +185,82 @@
     </script>
 @endsection
 
+@push('styles')
+<style>
+    .vo-asa { cursor: grab; color: var(--bv-text-muted); touch-action: none; }
+    .vo-asa:hover { color: var(--bv-accent); }
+    .vo-asa:active { cursor: grabbing; }
+    #vo-lista tr.sortable-ghost { opacity: .35; background: var(--bv-accent-soft); }
+    #vo-lista tr.sortable-chosen { box-shadow: var(--bv-shadow-lg); }
+    #vo-lista tr.sortable-drag { background: var(--bv-surface); }
+    .vo-estado { white-space: nowrap; font-weight: 600; }
+    .vo-estado.is-ok { color: #2e9e62; }
+    .vo-estado.is-error { color: var(--bv-danger); }
+    :root[data-theme="dark"] .vo-estado.is-ok { color: #7bd8a4; }
+</style>
+@endpush
+
 @push('scripts')
+@if ($modoOrden)
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+@endif
 <script>
     (function () {
         window.bvPageAnimated = true;
-        var rows = document.querySelectorAll('.bv-table-row');
+        // Solo se animan las primeras filas: con muchas, la entrada tardaría demasiado.
+        var rows = Array.prototype.slice.call(document.querySelectorAll('.bv-table-row'), 0, 25);
         if (rows.length) {
-            gsap.from(rows, { opacity: 0, y: 12, duration: 0.32, stagger: 0.04, ease: 'power2.out' });
+            gsap.from(rows, { opacity: 0, y: 12, duration: 0.32, stagger: 0.03, ease: 'power2.out', clearProps: 'transform,opacity' });
         }
         gsap.from('.bv-crud-toolbar', { opacity: 0, y: -8, duration: 0.3, delay: 0.05, ease: 'power2.out' });
     })();
+
+    @if ($modoOrden)
+    (function () {
+        var lista = document.getElementById('vo-lista');
+        var estado = document.getElementById('vo-estado');
+        if (!lista || !window.Sortable) return;
+        var url = @json(route('videoscat.ordenar.guardar', request('categoria_id')));
+        var token = @json(csrf_token());
+        var envio = 0;
+        var ocultar;
+
+        function mostrar(texto, clase) {
+            if (!estado) return;
+            clearTimeout(ocultar);
+            estado.className = 'vo-estado small ' + (clase || '');
+            estado.innerHTML = texto;
+            if (clase === 'is-ok') ocultar = setTimeout(function () { estado.innerHTML = ''; }, 2500);
+        }
+
+        function guardar() {
+            var ids = Array.prototype.map.call(lista.querySelectorAll('tr[data-id]'), function (tr, i) {
+                tr.querySelector('.vo-num').textContent = i + 1;
+                return parseInt(tr.dataset.id, 10);
+            });
+            var actual = ++envio;
+            mostrar('<i class="fa fa-spinner fa-spin"></i> Guardando…');
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': token, 'X-Requested-With': 'XMLHttpRequest', 'X-HTTP-Method-Override': 'PUT' },
+                body: JSON.stringify({ orden: ids }),
+            }).then(function (r) {
+                if (!r.ok) throw new Error(r.status);
+                if (actual === envio) mostrar('<i class="fa fa-check"></i> Orden guardado', 'is-ok');
+            }).catch(function () {
+                if (actual === envio) mostrar('<i class="fa fa-exclamation-triangle"></i> No se pudo guardar. Recarga la página e inténtalo de nuevo.', 'is-error');
+            });
+        }
+
+        Sortable.create(lista, {
+            handle: '.vo-asa',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            onEnd: function (e) { if (e.oldIndex !== e.newIndex) guardar(); },
+        });
+    })();
+    @endif
 </script>
 @endpush

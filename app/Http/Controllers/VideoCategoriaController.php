@@ -92,6 +92,11 @@ class VideoCategoriaController extends Controller
             }
         });
 
+        // La lista de videos guarda al soltar cada fila (petición AJAX).
+        if ($request->expectsJson()) {
+            return response()->json(['ok' => true, 'mensaje' => 'Orden guardado']);
+        }
+
         return redirect()->route('videoscat.index')
             ->with('success', 'Orden de "'.$videoCategoria->nombre.'" guardado. Así se verá en la web.');
     }
