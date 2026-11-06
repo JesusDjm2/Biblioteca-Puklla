@@ -263,6 +263,42 @@ body.bv-no-scroll { overflow: hidden; }
 
 .bv-sidebar-nav .sidebar-menu-label:first-child { margin-top: 0; }
 
+/* admin/css/style.css fija "#sidebar ul li { font-size: 16px }", que por
+   especificidad pisa las reglas de arriba: se repiten con #sidebar delante
+   para que etiquetas e ítems usen un tamaño acorde al ancho del menú. */
+#sidebar .bv-sidebar-nav ul li.sidebar-menu-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#sidebar .bv-sidebar-nav ul.components > li:not(.sidebar-menu-label) {
+    font-size: 0.86rem;
+}
+
+#sidebar .bv-sidebar-nav ul.components > li > a {
+    padding: 7px 0;
+}
+
+#sidebar .bv-sidebar-nav ul.components > li > a > .fa {
+    width: 1.1rem;
+    margin-right: 0.35rem;
+    text-align: center;
+    opacity: 0.85;
+}
+
+#sidebar .bv-sidebar-nav ul li > ul li {
+    font-size: 0.8rem;
+}
+
+#sidebar .bv-sidebar-nav ul li > ul li a {
+    padding: 5px 0;
+}
+
 #sidebar ul li a {
     color: var(--bv-sidebar-text);
     border-bottom-color: var(--bv-sidebar-border);
@@ -1485,3 +1521,78 @@ a:hover .flecha-admin {
     gap: 0.5rem;
 }
 
+
+/* ═══════════════════════════════════════════════
+   ÁREAS DE TEXTO: la plantilla base (admin/css/style.css) fija
+   .form-control { height: 40px !important }, lo que aplasta los <textarea>.
+   Se les devuelve la altura según sus filas y se pueden estirar.
+═══════════════════════════════════════════════ */
+textarea.form-control {
+    height: auto !important;
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.55;
+}
+textarea.form-control[rows="2"] { min-height: 70px; }
+
+/* ═══════════════════════════════════════════════
+   CATEGORÍAS EN TARJETAS (Taq'e, Videos, Canciones, Repositorio)
+   Cada tarjeta define su color con --cg.
+═══════════════════════════════════════════════ */
+.cg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.cg-card {
+    --cg: #c78e41;
+    position: relative; display: flex; flex-direction: column; gap: .8rem; padding: 1rem 1.1rem 1rem;
+    background: var(--bv-surface, #fff); color: var(--bv-text, #2a2520);
+    border: 1px solid var(--bv-border, rgba(0,0,0,.08)); border-top: 4px solid var(--cg); border-radius: 12px;
+    box-shadow: var(--bv-shadow, 0 2px 10px rgba(20,16,12,.06)); transition: box-shadow .2s, transform .2s;
+}
+.cg-card:hover { box-shadow: var(--bv-shadow-lg, 0 10px 30px rgba(20,16,12,.12)); transform: translateY(-2px); }
+.cg-card.is-inactiva { opacity: .7; }
+.cg-card__cab { display: flex; align-items: flex-start; gap: .75rem; }
+.cg-card__icono { flex: 0 0 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+    color: var(--cg); background: color-mix(in srgb, var(--cg) 14%, var(--bv-surface, #fff)); }
+.cg-card__titulos { flex: 1; min-width: 0; }
+.cg-card__nombre { font-size: 1rem; font-weight: 700; margin: 0; line-height: 1.25; }
+.cg-card__desc { font-size: .76rem; color: var(--bv-text-muted, #7a6a5a); margin: .2rem 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cg-card__menu { border: 0; background: transparent; color: var(--bv-text-muted, #7a6a5a); width: 30px; height: 30px; border-radius: 8px; }
+.cg-card__menu:hover, .cg-card__menu:focus { background: var(--bv-surface-2, #f7f5f2); color: var(--bv-text, #2a2520); outline: none; }
+.cg-card__cifras { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .7rem; font-size: .8rem; color: var(--bv-text-muted, #7a6a5a); }
+.cg-card__cifras strong { font-size: 1.15rem; color: var(--bv-text, #2a2520); }
+.cg-chip { display: inline-flex; align-items: center; gap: .3rem; font-size: .7rem; font-weight: 600; padding: .2rem .5rem; border-radius: 6px; }
+.cg-chip--gris { background: var(--bv-surface-2, #f1efec); color: var(--bv-text-muted, #6c6157); }
+.cg-card__lista { list-style: none; padding: 0; margin: 0; border-top: 1px dashed var(--bv-border, rgba(0,0,0,.1)); flex: 1; }
+.cg-card__lista li { border-bottom: 1px dashed var(--bv-border, rgba(0,0,0,.08)); }
+.cg-card__lista a { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .45rem .1rem; color: inherit; text-decoration: none; font-size: .82rem; }
+.cg-card__lista a:hover .cg-card__item { color: var(--cg); }
+.cg-card__item { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; transition: color .15s; }
+.cg-card__item i { width: 1.1em; text-align: center; color: var(--bv-text-muted, #7a6a5a); font-weight: normal; }
+.cg-card__fecha { flex: 0 0 auto; font-size: .72rem; color: var(--bv-text-muted, #7a6a5a); }
+.cg-card__vacia { padding: .6rem .1rem; font-size: .8rem; font-style: italic; color: var(--bv-text-muted, #7a6a5a); border: 0 !important; }
+.cg-card__pie { display: flex; gap: .5rem; }
+.cg-card__pie .btn { flex: 1; font-weight: 600; }
+.cg-btn-crear { background: var(--cg); border-color: var(--cg); color: #fff !important; }
+.cg-btn-crear:hover { filter: brightness(.92); }
+
+/* Filas con acción propia (p. ej. colecciones del Repositorio) */
+.cg-fila { display: flex; align-items: center; gap: .5rem; padding: .4rem .1rem; font-size: .82rem; }
+.cg-fila__nombre { flex: 1; min-width: 0; color: inherit; text-decoration: none; }
+.cg-fila__nombre:hover .cg-card__item { color: var(--cg); }
+.cg-fila__nombre .cg-card__item { display: block; }
+.cg-fila__meta { display: block; font-size: .7rem; color: var(--bv-text-muted, #7a6a5a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cg-fila__acciones { flex: 0 0 auto; display: flex; align-items: center; gap: .25rem; }
+.cg-fila__btn { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 26px; padding: 0 .4rem; border-radius: 7px;
+    font-size: .72rem; font-weight: 600; border: 1px solid var(--bv-border, rgba(0,0,0,.1)); background: transparent; color: var(--bv-text-muted, #7a6a5a); text-decoration: none !important; }
+.cg-fila__btn:hover { border-color: var(--cg); color: var(--cg); }
+.cg-fila__btn--crear { border-color: color-mix(in srgb, var(--cg) 45%, transparent); color: var(--cg); }
+.cg-fila__btn--crear:hover { background: var(--cg); color: #fff; }
+.cg-sub { margin-top: .35rem; padding: .5rem .6rem .2rem; border-radius: 9px; background: var(--bv-surface-2, #f7f5f2); }
+.cg-sub__cab { display: flex; align-items: center; gap: .4rem; font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--bv-text-muted, #7a6a5a); }
+.cg-sub__cab .cg-fila__acciones { margin-left: auto; text-transform: none; letter-spacing: 0; }
+.cg-sub .cg-card__lista { border-top: 0; }
+.cg-sub .cg-card__lista li:last-child { border-bottom: 0; }
+
+/* Buscador rápido de tarjetas */
+.cg-buscar { max-width: 360px; margin-bottom: 1rem; }
+.cg-card__lista .cg-fila__nombre { display: block; padding: 0; }
+.cg-card__lista .cg-fila__btn { display: inline-flex; justify-content: center; padding: 0 .4rem; font-size: .72rem; }

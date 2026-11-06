@@ -1,96 +1,108 @@
 @extends('layouts.app')
-@section('titulo', 'videos')
+@section('titulo', 'Videos — Categorías')
 @section('contenido')
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Categorias de videos
-                <a href="{{ route('videoscat.create') }}" class="btn btn-info btn-sm float-right">Agregar nueva categoria</a>
-            </h3>
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
+    @include('partials.videos-crud-header', [
+        'active' => 'categorias',
+        'stats' => [
+            ['valor' => $videoCategorias->count(), 'singular' => 'categoría', 'plural' => 'categorías', 'icono' => 'fa-folder'],
+            ['valor' => $totalVideos, 'singular' => 'video', 'plural' => 'videos', 'icono' => 'fa-film'],
+        ],
+        'botones' => [
+            ['route' => route('videoscat.create'), 'label' => 'Nueva categoría', 'icono' => 'fa-folder', 'clase' => 'btn-outline-secondary'],
+            ['route' => route('videos.import.form'), 'label' => 'Importar', 'icono' => 'fa-upload', 'clase' => 'btn-outline-info'],
+            ['route' => route('videos.create', ['volver' => 'categorias']), 'label' => 'Agregar video', 'icono' => 'fa-plus'],
+        ],
+    ])
 
-            <input type="text" id="search" class="form-control form-control-sm mt-3" placeholder="Buscar Categoría...">
-            <div class="table-responsive">
-                <table class="table table-hover mt-4">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>URL</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($videoCategorias as $videoCategoria)
-                            <tr>
-                                <td>{{ $videoCategoria->id }}</td>
-                                <td>{{ $videoCategoria->nombre }}</td>
-                                <td>{{ $videoCategoria->url }}</td>
-                                <td>
-                                    <a href="{{ route('videoscat.show', $videoCategoria->url) }}"
-                                        class="btn btn-primary btn-sm" target="_blank">Ver</a>
-                                    <a href="{{ route('videoscat.edit', $videoCategoria->id) }}"
-                                        class="btn btn-warning btn-sm">Editar</a>
-                                    <form action="{{ route('videoscat.destroy', $videoCategoria->id) }}" method="POST"
-                                        style="display: inline-block;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-danger btn-sm"
-                                            onclick="confirmDelete('{{ route('videoscat.destroy', $videoCategoria->id) }}', '{{ $videoCategoria->nombre }}')">Eliminar</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <p class="bv-crud-meta mb-3">Elige una categoría para agregar un video directamente en ella, o revisa sus videos recientes.</p>
+
+    @include('material-didactico.partials.alertas')
+
+    @if ($videoCategorias->isEmpty())
+        <div class="bv-form-card text-center text-muted">
+            Aún no hay categorías. <a href="{{ route('videoscat.create') }}">Crea la primera</a> para empezar a agregar videos.
         </div>
-    </div>
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-center">
-                    <p>¿Estás seguro de que deseas eliminar este Video?</p>
-                    <p class="text-primary">'<strong id="videoNombre"></strong>'</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <form id="deleteForm" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                    </form>
-                </div>
-            </div>
+    @elseif ($videoCategorias->count() > 6)
+        <div class="cg-buscar">
+            <input type="search" id="cg-q" class="form-control form-control-sm bv-toolbar-control"
+                placeholder="Buscar categoría…" autocomplete="off" aria-label="Buscar categoría">
         </div>
+    @endif
+
+    @php
+        $paleta = ['#dc3545', '#c78e41', '#1f8a70', '#3f6ad8', '#8e44ad', '#d35400', '#16a2b8', '#6c757d'];
+        $iconosFuente = ['youtube' => 'fa-youtube-play', 'drive' => 'fa-google', 'archivo' => 'fa-file-video-o'];
+    @endphp
+
+    <div class="cg-grid">
+        @foreach ($videoCategorias as $cat)
+            <article class="cg-card" style="--cg: {{ $paleta[$loop->index % count($paleta)] }};"
+                data-nombre="{{ Str::lower(Str::ascii($cat->nombre)) }}">
+                <header class="cg-card__cab">
+                    <span class="cg-card__icono"><i class="fa fa-film"></i></span>
+                    <div class="cg-card__titulos">
+                        <h2 class="cg-card__nombre">{{ $cat->nombre }}</h2>
+                        <p class="cg-card__desc"><code>{{ $cat->url }}</code></p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="cg-card__menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Más opciones">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{{ route('videoscat.edit', $cat->id) }}"><i class="fa fa-edit fa-fw"></i> Editar categoría</a>
+                            <a class="dropdown-item" href="{{ route('videoscat.show', $cat->url) }}" target="_blank" rel="noopener"><i class="fa fa-external-link fa-fw"></i> Ver en la web</a>
+                            <div class="dropdown-divider"></div>
+                            <button type="button" class="dropdown-item text-danger btn-delete"
+                                data-url="{{ route('videoscat.destroy', $cat->id) }}"
+                                data-nombre="{{ $cat->nombre }}" data-total="{{ $cat->videos_count }}">
+                                <i class="fa fa-trash fa-fw"></i> Eliminar categoría
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="cg-card__cifras">
+                    <span><strong>{{ $cat->videos_count }}</strong> {{ $cat->videos_count === 1 ? 'video' : 'videos' }}</span>
+                    @if ($cat->youtube_count)
+                        <span class="cg-chip cg-chip--gris" title="En YouTube"><i class="fa fa-youtube-play"></i> {{ $cat->youtube_count }}</span>
+                    @endif
+                    @if ($cat->drive_count)
+                        <span class="cg-chip cg-chip--gris" title="En Google Drive"><i class="fa fa-google"></i> {{ $cat->drive_count }}</span>
+                    @endif
+                    @if ($cat->archivo_count)
+                        <span class="cg-chip cg-chip--gris" title="Subidos al servidor"><i class="fa fa-file-video-o"></i> {{ $cat->archivo_count }}</span>
+                    @endif
+                </div>
+
+                <ul class="cg-card__lista">
+                    @forelse ($cat->videos->take(3) as $video)
+                        <li>
+                            <a href="{{ route('videos.edit', ['Video' => $video->id, 'volver' => 'categorias']) }}" title="Editar «{{ $video->nombre }}»">
+                                <span class="cg-card__item"><i class="fa {{ $iconosFuente[$video->fuente] ?? 'fa-film' }}"></i> {{ $video->nombre }}</span>
+                                <span class="cg-card__fecha">{{ $video->created_at?->format('d/m/Y') ?? '' }}</span>
+                            </a>
+                        </li>
+                    @empty
+                        <li class="cg-card__vacia">Todavía no hay videos en esta categoría.</li>
+                    @endforelse
+                </ul>
+
+                <footer class="cg-card__pie">
+                    <a href="{{ route('videos.create', ['categoria_id' => $cat->id, 'volver' => 'categorias']) }}" class="btn btn-sm cg-btn-crear">
+                        <i class="fa fa-plus"></i> Nuevo video
+                    </a>
+                    <a href="{{ route('videos.index', ['categoria_id' => $cat->id]) }}" class="btn btn-sm btn-outline-secondary {{ $cat->videos_count ? '' : 'disabled' }}">
+                        <i class="fa fa-list"></i> Ver {{ $cat->videos_count > 3 ? 'los '.$cat->videos_count : 'videos' }}
+                    </a>
+                </footer>
+            </article>
+        @endforeach
     </div>
 
-    <script>
-        function confirmDelete(url, nombreVideo) {
-            $('#deleteModal').modal('show');
-            document.getElementById('deleteForm').action = url;
-            document.getElementById('videoNombre').textContent = nombreVideo;
-        }
-    </script>
+    <form id="deleteForm" method="POST" class="d-none">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    @include('partials.cg-scripts', ['entidad' => 'video(s)', 'titulo' => 'Eliminar categoría de videos'])
 @endsection

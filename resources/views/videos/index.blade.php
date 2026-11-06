@@ -1,180 +1,174 @@
 @extends('layouts.app')
-@section('titulo', 'videos')
+@section('titulo', 'Videos')
 @section('contenido')
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Videos
-                <a href="{{ route('videos.create') }}" class="btn btn-info btn-sm float-right">Agregar nuevo video</a>
-                <a href="{{ route('videos.import.form') }}" class="btn btn-outline-info btn-sm float-right mr-2"><i class="fa fa-upload"></i> Importar masivamente</a>
-            </h3>
+    @include('partials.videos-crud-header', [
+        'active' => 'videos',
+        'stats' => [['valor' => $videos->total(), 'singular' => 'video', 'plural' => 'videos', 'icono' => 'fa-film']],
+        'botones' => [
+            ['route' => route('videos.import.form'), 'label' => 'Importar masivamente', 'icono' => 'fa-upload', 'clase' => 'btn-outline-info'],
+            ['route' => route('videos.create', array_filter(['categoria_id' => request('categoria_id')])), 'label' => 'Agregar video', 'icono' => 'fa-plus'],
+        ],
+    ])
 
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
+    @include('material-didactico.partials.alertas')
 
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <form method="get" action="{{ route('videos.index') }}" class="bv-crud-toolbar">
+        <div class="form-row align-items-end">
+            <div class="form-group col-md-4 mb-2 mb-md-0">
+                <label for="vid-q" class="small text-muted mb-1 d-block"><i class="fa fa-search mr-1"></i>Buscar</label>
+                <input type="text" id="vid-q" name="q" class="form-control form-control-sm bv-toolbar-control"
+                    value="{{ request('q') }}" placeholder="Nombre o descripción…" autocomplete="off">
+            </div>
+            <div class="form-group col-md-3 mb-2 mb-md-0">
+                <label for="vid-cat" class="small text-muted mb-1 d-block"><i class="fa fa-folder mr-1"></i>Categoría</label>
+                <select id="vid-cat" name="categoria_id" class="form-control form-control-sm bv-toolbar-control">
+                    <option value="">Todas</option>
+                    @foreach ($categorias as $cat)
+                        <option value="{{ $cat->id }}" @selected((string) request('categoria_id') === (string) $cat->id)>
+                            {{ $cat->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-md-2 mb-2 mb-md-0">
+                <label for="vid-fuente" class="small text-muted mb-1 d-block"><i class="fa fa-link mr-1"></i>Origen</label>
+                <select id="vid-fuente" name="fuente" class="custom-select custom-select-sm bv-toolbar-control">
+                    <option value="">Todos</option>
+                    <option value="youtube" @selected(request('fuente') === 'youtube')>YouTube</option>
+                    <option value="drive" @selected(request('fuente') === 'drive')>Drive</option>
+                    <option value="archivo" @selected(request('fuente') === 'archivo')>Subidos</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 mb-0">
+                <label class="small mb-1 d-block invisible" aria-hidden="true">Acciones</label>
+                <div class="btn-group btn-group-sm bv-toolbar-btn-group w-100">
+                    <button type="submit" class="btn btn-info"><i class="fa fa-filter mr-1"></i>Filtrar</button>
+                    <a href="{{ route('videos.index') }}" class="btn btn-outline-secondary">Limpiar</a>
                 </div>
-            @endif
-            <input type="text" id="search" class="form-control form-control-sm mt-3" placeholder="Buscar video...">
-            <div class="table-responsive" id="tablavideos">
-                <table class="table table-hover mt-4">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Categoría</th>
-                            <th>Video</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablavideos">
-                        @php $counter = 1; @endphp
-                        @foreach ($videos as $video)
-                            <tr>
-                                <td>{{ $counter }}</td>
-                                <td>{{ $video->nombre }}</td>
-                                <td>{{ $video->categoria->nombre }}</td>
-                                <td>
-                                    @if ($video->youtube)
-                                        <a class="btn btn-sm btn-info"
-                                            href="https://www.youtube.com/watch?v={{ $video->youtube }}" target="_blank">
-                                            Ver en YouTube <i class="fa fa-external-link"></i>
-                                        </a>
-                                    @elseif($video->drive)
-                                        <a class="btn btn-success btn-sm"
-                                            href="https://drive.google.com/file/d/{{ $video->drive }}/view"
-                                            target="_blank">Ver en Drive <i class="fa fa-external-link"></i>
-                                        </a>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('videos.edit', $video->id) }}" class="btn btn-sm btn-warning">
-                                        <i class="fa fa-edit"></i>
+            </div>
+        </div>
+    </form>
+
+    @if ($videos->total() > 0)
+        <p class="bv-crud-meta mb-2">
+            Mostrando {{ $videos->firstItem() }}–{{ $videos->lastItem() }} de {{ $videos->total() }} resultado(s)
+        </p>
+    @endif
+
+    <div class="bv-crud-table-wrap table-responsive">
+        <table class="table table-hover table-sm">
+            <thead class="thead-light">
+                <tr>
+                    <th style="width:3rem;">#</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th style="width:9rem;">Origen</th>
+                    <th style="width:8rem;" class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($videos as $video)
+                    <tr class="bv-table-row">
+                        <td class="text-muted small align-middle">{{ $videos->firstItem() + $loop->index }}</td>
+                        <td class="align-middle">
+                            <div class="font-weight-bold">{{ $video->nombre }}</div>
+                            @if ($video->descripcion)
+                                <span class="small text-muted">{{ \Illuminate\Support\Str::limit($video->descripcion, 90) }}</span>
+                            @endif
+                        </td>
+                        <td class="small align-middle">{{ $video->categoria?->nombre ?? '—' }}</td>
+                        <td class="align-middle">
+                            @switch($video->fuente)
+                                @case('youtube')
+                                    <a class="btn btn-sm btn-outline-danger" target="_blank" rel="noopener"
+                                        href="https://www.youtube.com/watch?v={{ $video->youtube }}">
+                                        <i class="fa fa-youtube-play mr-1"></i>YouTube
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                        onclick="confirmDelete('{{ route('videos.destroy', $video->id) }}', '{{ $video->nombre }}')">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            @php $counter++; @endphp
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                    @break
+                                @case('drive')
+                                    <a class="btn btn-sm btn-outline-success" target="_blank" rel="noopener"
+                                        href="https://drive.google.com/file/d/{{ $video->drive }}/view">
+                                        <i class="fa fa-google mr-1"></i>Drive
+                                    </a>
+                                    @break
+                                @case('archivo')
+                                    <a class="btn btn-sm btn-outline-info" target="_blank" rel="noopener"
+                                        href="{{ $video->archivo_url }}">
+                                        <i class="fa fa-file-video-o mr-1"></i>Subido
+                                    </a>
+                                    @break
+                                @default
+                                    <span class="text-muted small">Sin video</span>
+                            @endswitch
+                        </td>
+                        <td class="bv-crud-actions text-center text-nowrap align-middle">
+                            <a href="{{ $video->url_publica }}" target="_blank" rel="noopener"
+                                class="btn btn-sm btn-outline-secondary" title="Ver página pública (para compartir)">
+                                <i class="fa fa-external-link"></i>
+                            </a>
+                            <a href="{{ route('videos.edit', $video->id) }}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-delete-video"
+                                data-url="{{ route('videos.destroy', $video->id) }}"
+                                data-nombre="{{ $video->nombre }}" title="Eliminar">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="p-0 border-0">
+                            <div class="bv-empty-state">
+                                <i class="fa fa-film bv-empty-icon"></i>
+                                <p>No se encontraron videos.</p>
+                                <a href="{{ route('videos.create') }}" class="btn btn-sm btn-info">
+                                    <i class="fa fa-plus mr-1"></i>Agregar video
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-center">
-                    <p>¿Estás seguro de que deseas eliminar este video?
-                        <span>
-                            <p class="text-primary">'<strong id="videoNombre"></strong>'</p>
-                        </span>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <form id="deleteForm" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="bv-crud-pagination">{{ $videos->links() }}</div>
+
+    <form id="deleteFormVideo" method="POST" class="d-none">
+        @csrf
+        @method('DELETE')
+    </form>
+
     <script>
-        function confirmDelete(url, nombrevideo) {
-            $('#deleteModal').modal('show');
-            document.getElementById('deleteForm').action = url;
-            document.getElementById('videoNombre').textContent = nombrevideo;
-        }
-    </script>
-     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('search');
-            const tablavideos = document.getElementById('tablavideos');
-
-            searchInput.addEventListener('input', function() {
-                const searchTerm = searchInput.value.toLowerCase();
-
-                const videos = @json($videos); // Convierte los videos de PHP a JSON
-
-                // Función para remover tildes y caracteres especiales
-                function removeAccents(str) {
-                    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                }
-
-                // Filtrar los videos que coincidan con el término de búsqueda ignorando tildes
-                const filteredvideos = videos.filter(video => {
-                    const nombreSinTildes = removeAccents(video.nombre.toLowerCase());
-                    return nombreSinTildes.includes(removeAccents(searchTerm));
-                });
-
-                // Mostrar los videos filtrados en la tabla
-                rendervideos(filteredvideos);
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.btn-delete-video');
+            if (!btn) return;
+            window.bvConfirm({
+                titulo: 'Eliminar video',
+                mensaje: '¿Eliminar el video "' + btn.dataset.nombre + '"? Si fue subido al servidor, también se borrará el archivo.',
+                tono: 'danger',
+                icono: 'fa-trash',
+                textoConfirmar: 'Eliminar',
+            }).then(function (ok) {
+                if (!ok) return;
+                var f = document.getElementById('deleteFormVideo');
+                f.action = btn.dataset.url;
+                f.submit();
             });
-
-            function rendervideos(videos) {
-                tablavideos.innerHTML = ''; // Limpiar contenido actual de la tabla
-                let counter = 1;
-
-                videos.forEach(video => {
-                    const categoriasHTML = video.categorias.map(categoria => `
-                        <li>
-                            ${categoria.nombre}
-                            <small>&nbsp;
-                                <i class="fa fa-angle-right font-weight-bold text-info"></i>
-                                <i class="fa fa-angle-right font-weight-bold text-info"></i>
-                            </small> &nbsp;
-                            ${categoria.seccion.nombre}
-                        </li>
-                    `).join('');
-
-                    const rowHTML = `
-                        <tr>
-                            <td>${counter}</td>
-                            <td>${video.nombre}</td>
-                            <td>
-                                <ul>${categoriasHTML}</ul>
-                            </td>
-                            <td>
-                                <a href="{{ route('videos.show', '__video_id__') }}" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>
-                                <a href="{{ route('videos.edit', '__video_id__') }}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ route('videos.destroy', '__video_id__') }}')"><i class="fa fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-
-                    // Reemplazar placeholders en los enlaces de acciones con el ID real del video
-                    const rowHTMLWithIds = rowHTML
-                        .replace(/__video_id__/g, video.id);
-
-                    tablavideos.innerHTML += rowHTMLWithIds;
-                    counter++;
-                });
-            }
         });
     </script>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        window.bvPageAnimated = true;
+        var rows = document.querySelectorAll('.bv-table-row');
+        if (rows.length) {
+            gsap.from(rows, { opacity: 0, y: 12, duration: 0.32, stagger: 0.04, ease: 'power2.out' });
+        }
+        gsap.from('.bv-crud-toolbar', { opacity: 0, y: -8, duration: 0.3, delay: 0.05, ease: 'power2.out' });
+    })();
+</script>
+@endpush

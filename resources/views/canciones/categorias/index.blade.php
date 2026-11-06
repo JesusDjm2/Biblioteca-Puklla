@@ -1,95 +1,107 @@
 @extends('layouts.app')
-
-@section('titulo', 'Categorías de Canciones')
-
+@section('titulo', 'Canciones — Categorías')
 @section('contenido')
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Categorías de Canciones
-                <a href="{{ route('cancionescat.create') }}" class="btn btn-info btn-sm float-right">Crear Nueva Categoría</a>
-            </h3>
+    @include('partials.canciones-crud-header', [
+        'active' => 'categorias',
+        'stats' => [
+            ['valor' => $categorias->count(), 'singular' => 'categoría', 'plural' => 'categorías', 'icono' => 'fa-folder'],
+            ['valor' => $totalCanciones, 'singular' => 'canción', 'plural' => 'canciones', 'icono' => 'fa-music'],
+        ],
+        'botones' => [
+            ['route' => route('cancionescat.create'), 'label' => 'Nueva categoría', 'icono' => 'fa-folder', 'clase' => 'btn-outline-secondary'],
+            ['route' => route('canciones.create', ['volver' => 'categorias']), 'label' => 'Nueva canción', 'icono' => 'fa-plus'],
+        ],
+    ])
 
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
+    <p class="bv-crud-meta mb-3">Elige una categoría para registrar una canción directamente en ella, o revisa sus canciones recientes.</p>
 
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
+    @include('material-didactico.partials.alertas')
 
-            <table class="table table-hover mt-4">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>URL</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $counter = 1; @endphp
-                    @foreach ($categorias as $categoria)
-                        <tr>
-                            <td>{{ $counter }}</td>
-                            <td>{{ $categoria->nombre }}</td>
-                            <td>{{ $categoria->url }}</td>
-                            <td>
-                                <a href="{{ route('cancionescat.show', $categoria->id) }}" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>
-                                <a href="{{ route('cancionescat.edit', $categoria->id) }}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ route('cancionescat.destroy', $categoria->id) }}')"><i class="fa fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        @php $counter++; @endphp
-                    @endforeach
-                </tbody>
-            </table>
+    @if ($categorias->isEmpty())
+        <div class="bv-form-card text-center text-muted">
+            Aún no hay categorías. <a href="{{ route('cancionescat.create') }}">Crea la primera</a> para empezar a registrar canciones.
         </div>
+    @elseif ($categorias->count() > 6)
+        <div class="cg-buscar">
+            <input type="search" id="cg-q" class="form-control form-control-sm bv-toolbar-control"
+                placeholder="Buscar categoría…" autocomplete="off" aria-label="Buscar categoría">
+        </div>
+    @endif
+
+    @php
+        $paleta = ['#28a745', '#c78e41', '#3f6ad8', '#8e44ad', '#dc3545', '#16a2b8', '#d35400', '#6c757d'];
+        $iconos = ['youtube' => 'fa-youtube-play', 'drive' => 'fa-google', 'spotify' => 'fa-spotify'];
+    @endphp
+
+    <div class="cg-grid">
+        @foreach ($categorias as $cat)
+            <article class="cg-card" style="--cg: {{ $paleta[$loop->index % count($paleta)] }};"
+                data-nombre="{{ Str::lower(Str::ascii($cat->nombre)) }}">
+                <header class="cg-card__cab">
+                    <span class="cg-card__icono"><i class="fa fa-music"></i></span>
+                    <div class="cg-card__titulos">
+                        <h2 class="cg-card__nombre">{{ $cat->nombre }}</h2>
+                        <p class="cg-card__desc"><code>{{ $cat->url }}</code></p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="cg-card__menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Más opciones">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{{ route('cancionescat.edit', $cat->id) }}"><i class="fa fa-edit fa-fw"></i> Editar categoría</a>
+                            <a class="dropdown-item" href="{{ route('cancionesPuklla') }}" target="_blank" rel="noopener"><i class="fa fa-external-link fa-fw"></i> Ver en la web</a>
+                            <div class="dropdown-divider"></div>
+                            <button type="button" class="dropdown-item text-danger btn-delete"
+                                data-url="{{ route('cancionescat.destroy', $cat->id) }}"
+                                data-nombre="{{ $cat->nombre }}" data-total="{{ $cat->canciones_count }}">
+                                <i class="fa fa-trash fa-fw"></i> Eliminar categoría
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="cg-card__cifras">
+                    <span><strong>{{ $cat->canciones_count }}</strong> {{ $cat->canciones_count === 1 ? 'canción' : 'canciones' }}</span>
+                    @if ($cat->youtube_count)
+                        <span class="cg-chip cg-chip--gris" title="En YouTube"><i class="fa fa-youtube-play"></i> {{ $cat->youtube_count }}</span>
+                    @endif
+                    @if ($cat->spotify_count)
+                        <span class="cg-chip cg-chip--gris" title="En Spotify"><i class="fa fa-spotify"></i> {{ $cat->spotify_count }}</span>
+                    @endif
+                    @if ($cat->drive_count)
+                        <span class="cg-chip cg-chip--gris" title="En Google Drive"><i class="fa fa-google"></i> {{ $cat->drive_count }}</span>
+                    @endif
+                </div>
+
+                <ul class="cg-card__lista">
+                    @forelse ($cat->canciones->take(3) as $cancion)
+                        <li>
+                            <a href="{{ route('canciones.edit', ['cancione' => $cancion->id, 'volver' => 'categorias']) }}" title="Editar «{{ $cancion->nombre }}»">
+                                <span class="cg-card__item"><i class="fa {{ $iconos[$cancion->plataforma] ?? 'fa-music' }}"></i> {{ $cancion->nombre }}</span>
+                                <span class="cg-card__fecha">{{ Str::limit($cancion->autor, 22) }}</span>
+                            </a>
+                        </li>
+                    @empty
+                        <li class="cg-card__vacia">Todavía no hay canciones en esta categoría.</li>
+                    @endforelse
+                </ul>
+
+                <footer class="cg-card__pie">
+                    <a href="{{ route('canciones.create', ['categoria_id' => $cat->id, 'volver' => 'categorias']) }}" class="btn btn-sm cg-btn-crear">
+                        <i class="fa fa-plus"></i> Nueva canción
+                    </a>
+                    <a href="{{ route('canciones.index', ['categoria_id' => $cat->id]) }}" class="btn btn-sm btn-outline-secondary {{ $cat->canciones_count ? '' : 'disabled' }}">
+                        <i class="fa fa-list"></i> Ver {{ $cat->canciones_count > 3 ? 'las '.$cat->canciones_count : 'canciones' }}
+                    </a>
+                </footer>
+            </article>
+        @endforeach
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ¿Estás seguro de que deseas eliminar esta categoría?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <form id="deleteForm" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <form id="deleteForm" method="POST" class="d-none">
+        @csrf
+        @method('DELETE')
+    </form>
 
-    <script>
-        function confirmDelete(url) {
-            const deleteForm = document.getElementById('deleteForm');
-            deleteForm.action = url;
-            $('#deleteModal').modal('show');
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Additional script for handling other functionalities if needed
-        });
-    </script>
+    @include('partials.cg-scripts', ['entidad' => 'canción(es)', 'titulo' => 'Eliminar categoría de canciones'])
 @endsection

@@ -1,126 +1,42 @@
 @extends('layouts.app')
-
-@section('titulo', 'Agregar Nuevo Video')
-
+@section('titulo', 'Nueva canción')
 @section('contenido')
-    <div class="row">
-        <div class="col-7">
-            <h3>Agregar Nueva Canción</h3>
-        </div>
-        <div class="col-5">
-            <a href="{{route('canciones.index')}}" class="float-right btn btn-sm btn-danger">Volver</a>
-        </div>
-        <div class="col-md-12">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+    @php
+        $volver = old('volver', request('volver'));
+        $urlVolver = $volver === 'categorias' ? route('cancionescat.index') : route('canciones.index');
+    @endphp
+    @include('partials.canciones-crud-header', ['active' => $volver === 'categorias' ? 'categorias' : 'canciones'])
+    @include('partials.admin-breadcrumb', [
+        'items' => [
+            ['label' => 'Panel', 'url' => route('home')],
+            ['label' => 'Canciones', 'url' => $urlVolver],
+            ['label' => 'Nueva canción', 'url' => null],
+        ],
+    ])
 
-            <form action="{{ route('canciones.store') }}" method="POST">
-                @csrf
-                <div class="form-group mt-3">
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" name="nombre" id="nombre" class="form-control form-control-sm rounded-pill"
-                        value="{{ old('nombre') }}" required>
-                    @if ($errors->has('nombre'))
-                        <div class="text-danger">{{ $errors->first('nombre') }}</div>
-                    @endif
-                </div>
-                <div class="form-group">
-                    <label for="autor">Autor/Compositor: </label>
-                    <input type="text" name="autor" id="autor"
-                           class="form-control form-control-sm rounded-pill" 
-                           value="{{ old('autor') }}" maxlength="255">
-                    @if ($errors->has('autor'))
-                        <div class="text-danger">{{ $errors->first('autor') }}</div>
-                    @endif
-                </div>
-                <div class="form-group">
-                    <label for="categoria_id">Categoría:</label>
-                    <select name="categoria_id" id="categoria_id" class="form-control form-control-sm rounded-pill"
-                        required>
-                        <option value="">Seleccionar categoría</option>
-                        @foreach ($categorias as $categoria)
-                            <option value="{{ $categoria->id }}"
-                                {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @if ($errors->has('categoria_id'))
-                        <div class="text-danger">{{ $errors->first('categoria_id') }}</div>
-                    @endif
-                </div>
-                <div class="form-group">
-                    <p>Elegir plataforma:</p>
-                    <button type="button" id="youtubeBtn" class="btn btn-sm btn-danger">YouTube</button>
-                    <button type="button" id="driveBtn" class="btn btn-sm btn-success">Drive</button>
-                    <button type="button" id="spotifyBtn" class="btn btn-sm btn-warning">Spotify</button>
-                </div>
-                <div class="form-group" id="youtubeField" style="display:none;">
-                    <label for="youtube">YouTube: <small class="text-primary">(Insertar identificador)</small></label>
-                    <textarea name="youtube" id="youtube" class="form-control form-control-sm rounded-pill" rows="3">{{ old('youtube') }}</textarea>
-                    @if ($errors->has('youtube'))
-                        <div class="text-danger">{{ $errors->first('youtube') }}</div>
-                    @endif
-                </div>
-                <div class="form-group" id="driveField" style="display:none;">
-                    <label for="drive">Drive: <small class="text-primary">(Insertar identificador)</small></label>
-                    <input type="text" name="drive" id="drive" class="form-control form-control-sm rounded-pill"
-                        value="{{ old('drive') }}">
-                    @if ($errors->has('drive'))
-                        <div class="text-danger">{{ $errors->first('drive') }}</div>
-                    @endif
-                </div>
-                <div class="form-group" id="spotifyField" style="display:none;">
-                    <label for="spotify">Spotify: <small class="text-primary">(Insertar identificador)</small></label>
-                    <input type="text" name="spotify" id="spotify" class="form-control form-control-sm rounded-pill"
-                        value="{{ old('spotify') }}">
-                    @if ($errors->has('spotify'))
-                        <div class="text-danger">{{ $errors->first('spotify') }}</div>
-                    @endif
-                </div>
-                <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
-            </form>
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="bv-crud-page-title mb-0">
+                Nueva canción
+                @if ($catElegida = $categorias->firstWhere('id', $cancion->categoria_id))
+                    <small class="text-muted" style="font-size:.6em;">en <i class="fa fa-music"></i> {{ $catElegida->nombre }}</small>
+                @endif
+            </h1>
+            <p class="bv-crud-meta">Registra la canción y pega el enlace de YouTube, Spotify o Google Drive donde se puede escuchar.</p>
         </div>
+        <a href="{{ $urlVolver }}" class="btn btn-outline-secondary btn-sm mt-2"><i class="fa fa-arrow-left"></i> Volver</a>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const youtubeBtn = document.getElementById('youtubeBtn');
-            const driveBtn = document.getElementById('driveBtn');
-            const spotifyBtn = document.getElementById('spotifyBtn');
-            const youtubeField = document.getElementById('youtubeField');
-            const driveField = document.getElementById('driveField');
-            const spotifyField = document.getElementById('spotifyField');
+    @include('material-didactico.partials.errores')
 
-            youtubeBtn.addEventListener('click', function() {
-                youtubeField.style.display = 'block';
-                driveField.style.display = 'none';
-                spotifyField.style.display = 'none';
-                document.getElementById('drive').value = ''; // Clear drive field
-                document.getElementById('spotify').value = ''; // Clear spotify field
-            });
+    <form action="{{ route('canciones.store') }}" method="POST">
+        @csrf
+        <input type="hidden" name="volver" value="{{ $volver }}">
+        @include('canciones._form')
 
-            driveBtn.addEventListener('click', function() {
-                driveField.style.display = 'block';
-                youtubeField.style.display = 'none';
-                spotifyField.style.display = 'none';
-                document.getElementById('youtube').value = ''; // Clear youtube field
-                document.getElementById('spotify').value = ''; // Clear spotify field
-            });
-
-            spotifyBtn.addEventListener('click', function() {
-                spotifyField.style.display = 'block';
-                youtubeField.style.display = 'none';
-                driveField.style.display = 'none';
-                document.getElementById('youtube').value = ''; // Clear youtube field
-                document.getElementById('drive').value = ''; // Clear drive field
-            });
-        });
-    </script>
+        <div class="d-flex justify-content-end mb-4">
+            <a href="{{ $urlVolver }}" class="btn btn-secondary mr-2">Cancelar</a>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save mr-1"></i> Guardar canción</button>
+        </div>
+    </form>
 @endsection

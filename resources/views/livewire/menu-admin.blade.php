@@ -83,12 +83,12 @@
                         aria-expanded="{{ $openCanciones ? 'true' : 'false' }}" class="dropdown-toggle"><i
                             class="fa fa-music"></i> Canciones</a>
                     <ul class="collapse list-unstyled {{ $openCanciones ? 'show' : '' }}" id="admCanciones">
-                        <li class="{{ request()->routeIs('canciones.*') ? 'active' : '' }}">
-                            <a href="{{ route('canciones.index') }}"><span class="flecha-admin">→</span> Canciones</a>
-                        </li>
                         <li class="{{ request()->routeIs('cancionescat.*') ? 'active' : '' }}">
                             <a href="{{ route('cancionescat.index') }}"><span class="flecha-admin">→</span>
                                 Categorías</a>
+                        </li>
+                        <li class="{{ request()->routeIs('canciones.*') ? 'active' : '' }}">
+                            <a href="{{ route('canciones.index') }}"><span class="flecha-admin">→</span> Canciones</a>
                         </li>
                     </ul>
                 </li>
@@ -97,12 +97,15 @@
                     <a href="#admVideos" data-toggle="collapse" aria-expanded="{{ $openVideos ? 'true' : 'false' }}"
                         class="dropdown-toggle"><i class="fa fa-video-camera"></i> Videos</a>
                     <ul class="collapse list-unstyled {{ $openVideos ? 'show' : '' }}" id="admVideos">
-                        <li class="{{ request()->routeIs('videos.*') ? 'active' : '' }}">
-                            <a href="{{ route('videos.index') }}"><span class="flecha-admin">→</span> Videos</a>
-                        </li>
                         <li class="{{ request()->routeIs('videoscat.*') ? 'active' : '' }}">
                             <a href="{{ route('videoscat.index') }}"><span class="flecha-admin">→</span>
                                 Categorías</a>
+                        </li>
+                        <li class="{{ request()->routeIs('videos.index', 'videos.edit', 'videos.import.*') ? 'active' : '' }}">
+                            <a href="{{ route('videos.index') }}"><span class="flecha-admin">→</span> Videos</a>
+                        </li>
+                        <li class="{{ request()->routeIs('videos.create') ? 'active' : '' }}">
+                            <a href="{{ route('videos.create') }}"><span class="flecha-admin">→</span> Agregar video</a>
                         </li>
                     </ul>
                 </li>
@@ -122,11 +125,24 @@
                     <a href="#admTaqe" data-toggle="collapse" aria-expanded="{{ $openTaqe ? 'true' : 'false' }}"
                         class="dropdown-toggle"><i class="fa fa-archive"></i> Taq'e</a>
                     <ul class="collapse list-unstyled {{ $openTaqe ? 'show' : '' }}" id="admTaqe">
-                        <li class="{{ request()->routeIs('admin.taqe.trabajos.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.taqe.trabajos.index') }}"><span class="flecha-admin">→</span> Trabajos</a>
-                        </li>
                         <li class="{{ request()->routeIs('admin.taqe.categorias.*') ? 'active' : '' }}">
                             <a href="{{ route('admin.taqe.categorias.index') }}"><span class="flecha-admin">→</span> Categorías</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.taqe.trabajos.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.taqe.trabajos.index') }}"><span class="flecha-admin">→</span> Actividades</a>
+                        </li>
+                    </ul>
+                </li>
+                @php $openRepo = $inGroup(['admin.repositorio.*']); @endphp
+                <li>
+                    <a href="#admRepo" data-toggle="collapse" aria-expanded="{{ $openRepo ? 'true' : 'false' }}"
+                        class="dropdown-toggle"><i class="fa fa-university"></i> Repositorio</a>
+                    <ul class="collapse list-unstyled {{ $openRepo ? 'show' : '' }}" id="admRepo">
+                        <li class="{{ request()->routeIs('admin.repositorio.estructura.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.repositorio.estructura.index') }}"><span class="flecha-admin">→</span> Comunidades y colecciones</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.repositorio.items.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.repositorio.items.index') }}"><span class="flecha-admin">→</span> Documentos</a>
                         </li>
                     </ul>
                 </li>
@@ -157,6 +173,8 @@
                         'biblioteca-fisica.materiales.*',
                     ]);
                     $openBibTaqe = $inGroup(['admin.taqe.*']);
+                    $openBibRepo = $inGroup(['admin.repositorio.*']);
+                    $openBibVideos = $inGroup(['videos.*', 'videoscat.*']);
                 @endphp
                 <li class="sidebar-menu-label">Administración Biblioteca</li>
                 <li>
@@ -200,13 +218,42 @@
                 </li>
                 <li>
                     <a href="#bibTaqe" data-toggle="collapse" aria-expanded="{{ $openBibTaqe ? 'true' : 'false' }}"
-                        class="dropdown-toggle"><i class="fa fa-graduation-cap"></i> Taq'e</a>
+                        class="dropdown-toggle"><i class="fa fa-calendar-check-o"></i> Taq'e</a>
                     <ul class="collapse list-unstyled {{ $openBibTaqe ? 'show' : '' }}" id="bibTaqe">
-                        <li class="{{ request()->routeIs('admin.taqe.trabajos.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.taqe.trabajos.index') }}"><span class="flecha-admin">→</span> Trabajos</a>
-                        </li>
                         <li class="{{ request()->routeIs('admin.taqe.categorias.*') ? 'active' : '' }}">
                             <a href="{{ route('admin.taqe.categorias.index') }}"><span class="flecha-admin">→</span> Categorías</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.taqe.trabajos.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.taqe.trabajos.index') }}"><span class="flecha-admin">→</span> Actividades</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#bibRepo" data-toggle="collapse" aria-expanded="{{ $openBibRepo ? 'true' : 'false' }}"
+                        class="dropdown-toggle"><i class="fa fa-university"></i> Repositorio</a>
+                    <ul class="collapse list-unstyled {{ $openBibRepo ? 'show' : '' }}" id="bibRepo">
+                        <li class="{{ request()->routeIs('admin.repositorio.estructura.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.repositorio.estructura.index') }}"><span class="flecha-admin">→</span> Comunidades y colecciones</a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.repositorio.items.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.repositorio.items.index') }}"><span class="flecha-admin">→</span> Documentos</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-menu-label">Multimedia</li>
+                <li>
+                    <a href="#bibVideos" data-toggle="collapse" aria-expanded="{{ $openBibVideos ? 'true' : 'false' }}"
+                        class="dropdown-toggle"><i class="fa fa-video-camera"></i> Videos</a>
+                    <ul class="collapse list-unstyled {{ $openBibVideos ? 'show' : '' }}" id="bibVideos">
+                        <li class="{{ request()->routeIs('videoscat.*') ? 'active' : '' }}">
+                            <a href="{{ route('videoscat.index') }}"><span class="flecha-admin">→</span> Categorías</a>
+                        </li>
+                        <li class="{{ request()->routeIs('videos.index', 'videos.edit', 'videos.import.*') ? 'active' : '' }}">
+                            <a href="{{ route('videos.index') }}"><span class="flecha-admin">→</span> Videos</a>
+                        </li>
+                        <li class="{{ request()->routeIs('videos.create') ? 'active' : '' }}">
+                            <a href="{{ route('videos.create') }}"><span class="flecha-admin">→</span> Agregar video</a>
                         </li>
                     </ul>
                 </li>
@@ -220,12 +267,15 @@
                         aria-expanded="{{ $openRolVideos ? 'true' : 'false' }}" class="dropdown-toggle"><i
                             class="fa fa-video-camera"></i> Videos</a>
                     <ul class="collapse list-unstyled {{ $openRolVideos ? 'show' : '' }}" id="rolVideos">
-                        <li class="{{ request()->routeIs('videos.*') ? 'active' : '' }}">
-                            <a href="{{ route('videos.index') }}"><span class="flecha-admin">→</span> Videos</a>
-                        </li>
                         <li class="{{ request()->routeIs('videoscat.*') ? 'active' : '' }}">
                             <a href="{{ route('videoscat.index') }}"><span class="flecha-admin">→</span>
                                 Categorías</a>
+                        </li>
+                        <li class="{{ request()->routeIs('videos.index', 'videos.edit', 'videos.import.*') ? 'active' : '' }}">
+                            <a href="{{ route('videos.index') }}"><span class="flecha-admin">→</span> Videos</a>
+                        </li>
+                        <li class="{{ request()->routeIs('videos.create') ? 'active' : '' }}">
+                            <a href="{{ route('videos.create') }}"><span class="flecha-admin">→</span> Agregar video</a>
                         </li>
                     </ul>
                 </li>
@@ -239,13 +289,13 @@
                         aria-expanded="{{ $openRolAudios ? 'true' : 'false' }}" class="dropdown-toggle"><i
                             class="fa fa-music"></i> Canciones</a>
                     <ul class="collapse list-unstyled {{ $openRolAudios ? 'show' : '' }}" id="rolAudios">
-                        <li class="{{ request()->routeIs('canciones.*') ? 'active' : '' }}">
-                            <a href="{{ route('canciones.index') }}"><span class="flecha-admin">→</span>
-                                Canciones</a>
-                        </li>
                         <li class="{{ request()->routeIs('cancionescat.*') ? 'active' : '' }}">
                             <a href="{{ route('cancionescat.index') }}"><span class="flecha-admin">→</span>
                                 Categorías</a>
+                        </li>
+                        <li class="{{ request()->routeIs('canciones.*') ? 'active' : '' }}">
+                            <a href="{{ route('canciones.index') }}"><span class="flecha-admin">→</span>
+                                Canciones</a>
                         </li>
                     </ul>
                 </li>
