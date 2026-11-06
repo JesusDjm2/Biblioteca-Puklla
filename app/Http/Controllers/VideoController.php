@@ -96,20 +96,19 @@ class VideoController extends Controller
         $this->aplicarFuente($request, $video);
         $video->save();
 
-        return $this->respuestaGuardado($request, 'Video "'.$video->nombre.'" creado correctamente.');
+        return $this->respuestaGuardado($request, $video, 'Video "'.$video->nombre.'" creado correctamente.');
     }
 
     /**
      * El formulario envía por AJAX cuando sube un archivo (para mostrar el
      * progreso); en ese caso se responde JSON con la URL a la que ir.
-     * Si se partió de la vista de Categorías (volver=categorias), se regresa ahí.
      */
-    private function respuestaGuardado(Request $request, string $mensaje)
+    private function respuestaGuardado(Request $request, Video $video, string $mensaje)
     {
+        // Siempre se vuelve a la lista de la categoría del video, con él resaltado.
         session()->flash('success', $mensaje);
-        $destino = $request->input('volver') === 'categorias'
-            ? route('videoscat.index')
-            : route('videos.index');
+        session()->flash('video_resaltado', $video->id);
+        $destino = route('videos.index', array_filter(['categoria_id' => $video->categoria_id]));
 
         return $request->expectsJson()
             ? response()->json(['redirect' => $destino])
@@ -186,7 +185,7 @@ class VideoController extends Controller
             $this->eliminarDeDriveSiEsPropio($driveAnterior);
         }
 
-        return $this->respuestaGuardado($request, 'Video actualizado correctamente.');
+        return $this->respuestaGuardado($request, $video, 'Video "'.$video->nombre.'" actualizado correctamente.');
     }
 
     public function destroy($id)

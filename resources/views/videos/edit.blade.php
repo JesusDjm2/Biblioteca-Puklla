@@ -3,7 +3,10 @@
 @section('contenido')
     @php
         $volver = old('volver', request('volver'));
-        $urlVolver = $volver === 'categorias' ? route('videoscat.index') : route('videos.index');
+        // Volver/Cancelar llevan a la lista de la categoría (o a las tarjetas si se partió de ahí sin categoría).
+        $urlVolver = $video->categoria_id
+            ? route('videos.index', ['categoria_id' => $video->categoria_id])
+            : ($volver === 'categorias' ? route('videoscat.index') : route('videos.index'));
     @endphp
     @include('partials.videos-crud-header', ['active' => $volver === 'categorias' ? 'categorias' : 'videos'])
     @include('partials.admin-breadcrumb', [

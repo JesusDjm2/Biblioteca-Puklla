@@ -87,7 +87,7 @@
             </thead>
             <tbody @if ($modoOrden) id="vo-lista" @endif>
                 @forelse ($videos as $video)
-                    <tr class="bv-table-row" data-id="{{ $video->id }}">
+                    <tr class="bv-table-row {{ (int) session('video_resaltado') === $video->id ? 'is-resaltado' : '' }}" data-id="{{ $video->id }}">
                         @if ($modoOrden)
                             <td class="align-middle text-center vo-asa" title="Arrastrar para cambiar el orden"><i class="fa fa-bars"></i></td>
                         @endif
@@ -194,6 +194,8 @@
     #vo-lista tr.sortable-chosen { box-shadow: var(--bv-shadow-lg); }
     #vo-lista tr.sortable-drag { background: var(--bv-surface); }
     .vo-estado { white-space: nowrap; font-weight: 600; }
+    .bv-table-row.is-resaltado > td { background: var(--bv-accent-soft); }
+    .bv-table-row.is-resaltado > td:first-child { box-shadow: inset 4px 0 0 var(--bv-accent); }
     .vo-estado.is-ok { color: #2e9e62; }
     .vo-estado.is-error { color: var(--bv-danger); }
     :root[data-theme="dark"] .vo-estado.is-ok { color: #7bd8a4; }
@@ -213,6 +215,12 @@
             gsap.from(rows, { opacity: 0, y: 12, duration: 0.32, stagger: 0.03, ease: 'power2.out', clearProps: 'transform,opacity' });
         }
         gsap.from('.bv-crud-toolbar', { opacity: 0, y: -8, duration: 0.3, delay: 0.05, ease: 'power2.out' });
+
+        // Video recién guardado: se lleva a la vista (los nuevos quedan al final de la lista).
+        var resaltado = document.querySelector('.bv-table-row.is-resaltado');
+        if (resaltado) {
+            setTimeout(function () { resaltado.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 350);
+        }
     })();
 
     @if ($modoOrden)
