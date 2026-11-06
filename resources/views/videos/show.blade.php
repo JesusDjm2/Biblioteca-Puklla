@@ -33,6 +33,22 @@
 
 @section('estilos')
     @include('partials.detalle-estilos')
+    <style>
+        .det-secuencia { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .75rem; margin: 1rem 0; }
+        .det-secuencia__btn {
+            display: flex; align-items: center; gap: .6rem; min-width: 0; padding: .55rem .85rem;
+            border: 1px solid rgba(200, 142, 65, .3); border-radius: 10px; background: #fff;
+            color: #2a2520; text-decoration: none; transition: border-color .2s, transform .2s, box-shadow .2s;
+        }
+        .det-secuencia__btn:hover { border-color: #cb9042; color: #2a2520; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(42, 37, 32, .1); text-decoration: none; }
+        .det-secuencia__btn i { color: #cb9042; flex: 0 0 auto; }
+        .det-secuencia__btn > span { min-width: 0; display: flex; flex-direction: column; }
+        .det-secuencia__btn small { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: #9c8c7c; font-weight: 700; }
+        .det-secuencia__nombre { font-size: .85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .det-secuencia__btn--sig { justify-content: flex-end; text-align: right; }
+        .det-secuencia__pos { font-size: .78rem; font-weight: 700; color: #8a7a6a; white-space: nowrap; }
+        @media (max-width: 575.98px) { .det-secuencia__nombre { display: none; } }
+    </style>
     <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
 @endsection
 
@@ -94,6 +110,28 @@
                     @endif
                 </div>
 
+                @if ($categoria && $totalSeccion > 1)
+                    <nav class="det-secuencia" aria-label="Videos de la sección">
+                        @if ($anterior)
+                            <a href="{{ $anterior->url_publica }}" class="det-secuencia__btn" rel="prev" title="{{ $anterior->nombre }}">
+                                <i class="fas fa-chevron-left"></i>
+                                <span><small>Anterior</small><span class="det-secuencia__nombre">{{ $anterior->nombre }}</span></span>
+                            </a>
+                        @else
+                            <span></span>
+                        @endif
+                        <span class="det-secuencia__pos">{{ $posicion }} de {{ $totalSeccion }}</span>
+                        @if ($siguiente)
+                            <a href="{{ $siguiente->url_publica }}" class="det-secuencia__btn det-secuencia__btn--sig" rel="next" title="{{ $siguiente->nombre }}">
+                                <span><small>Siguiente</small><span class="det-secuencia__nombre">{{ $siguiente->nombre }}</span></span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        @else
+                            <span></span>
+                        @endif
+                    </nav>
+                @endif
+
                 <section class="det-panel" aria-labelledby="det-acerca">
                     <h2 class="det-panel__titulo" id="det-acerca">Acerca de este video</h2>
                     @if ($video->descripcion)
@@ -125,7 +163,7 @@
             <aside class="col-lg-4">
                 <div class="det-aside">
                     <section class="det-panel det-panel--primero" aria-labelledby="det-mas">
-                        <h2 class="det-panel__titulo" id="det-mas">Más de esta sección</h2>
+                        <h2 class="det-panel__titulo" id="det-mas">A continuación</h2>
                         @if ($relacionados->isNotEmpty())
                             <ol class="det-lista">
                                 @foreach ($relacionados as $rel)

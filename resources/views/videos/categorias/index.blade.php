@@ -49,6 +49,9 @@
                             <i class="fa fa-ellipsis-v"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            @if ($cat->videos_count > 1)
+                                <a class="dropdown-item" href="{{ route('videoscat.ordenar', $cat->id) }}"><i class="fa fa-sort fa-fw"></i> Ordenar videos</a>
+                            @endif
                             <a class="dropdown-item" href="{{ route('videoscat.edit', $cat->id) }}"><i class="fa fa-edit fa-fw"></i> Editar categoría</a>
                             <a class="dropdown-item" href="{{ route('videoscat.show', $cat->url) }}" target="_blank" rel="noopener"><i class="fa fa-external-link fa-fw"></i> Ver en la web</a>
                             <div class="dropdown-divider"></div>
@@ -62,6 +65,9 @@
                 </header>
 
                 <div class="cg-card__cifras">
+                    @if ($cat->videos_count > 1)
+                        <a href="{{ route('videoscat.ordenar', $cat->id) }}" class="cg-chip cg-chip--gris order-last ml-auto text-decoration-none" title="Definir el orden en que se ven y reproducen"><i class="fa fa-sort"></i> Ordenar</a>
+                    @endif
                     <span><strong>{{ $cat->videos_count }}</strong> {{ $cat->videos_count === 1 ? 'video' : 'videos' }}</span>
                     @if ($cat->videos_sum_vistas)
                         <span class="cg-chip cg-chip--gris" title="Vistas en la web"><i class="fa fa-eye"></i> {{ number_format($cat->videos_sum_vistas) }}</span>

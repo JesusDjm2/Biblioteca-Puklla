@@ -20,6 +20,32 @@ class Video extends Model
 
     protected $fillable = ['nombre', 'descripcion', 'youtube', 'drive', 'archivo', 'categoria_id'];
 
+    protected static function booted()
+    {
+        // Un video nuevo, o que se mueve a otra categoría, queda al final de esa categoría.
+        static::creating(function (Video $video) {
+            if (! $video->orden) {
+                $video->orden = static::siguienteOrden($video->categoria_id);
+            }
+        });
+        static::updating(function (Video $video) {
+            if ($video->isDirty('categoria_id') && ! $video->isDirty('orden')) {
+                $video->orden = static::siguienteOrden($video->categoria_id);
+            }
+        });
+    }
+
+    public static function siguienteOrden($categoriaId): int
+    {
+        return (int) static::where('categoria_id', $categoriaId)->max('orden') + 1;
+    }
+
+    /** Orden de reproducción definido en el panel (Ordenar videos). */
+    public function scopeOrdenados($query)
+    {
+        return $query->orderBy('orden')->orderByDesc('created_at')->orderByDesc('id');
+    }
+
     public function categoria()
     {
         return $this->belongsTo(VideoCategoria::class, 'categoria_id');

@@ -49,6 +49,13 @@
         </div>
     </form>
 
+    @if (request('categoria_id') && $videos->total() > 1)
+        <div class="alert bv-alert alert-light d-flex flex-wrap align-items-center justify-content-between" style="gap:.5rem;">
+            <span class="small"><i class="fa fa-sort mr-1"></i> Los videos de esta categoría se muestran en su orden de reproducción en la web.</span>
+            <a href="{{ route('videoscat.ordenar', request('categoria_id')) }}" class="btn btn-sm btn-outline-info"><i class="fa fa-sort mr-1"></i>Cambiar orden</a>
+        </div>
+    @endif
+
     @if ($videos->total() > 0)
         <p class="bv-crud-meta mb-2">
             Mostrando {{ $videos->firstItem() }}–{{ $videos->lastItem() }} de {{ $videos->total() }} resultado(s)

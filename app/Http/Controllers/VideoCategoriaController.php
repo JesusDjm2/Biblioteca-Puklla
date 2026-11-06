@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Video;
 use App\Models\VideoCategoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VideoCategoriaController extends Controller
 {
@@ -58,8 +59,41 @@ class VideoCategoriaController extends Controller
         // Si por datos antiguos dos categorías comparten la URL, se muestra la que tiene videos.
         $categoria = VideoCategoria::where('url', $url)->withCount('videos')
             ->orderByDesc('videos_count')->firstOrFail();
-        $videos = $categoria->videos()->orderBy('created_at', 'desc')->get();
+        $videos = $categoria->videos()->ordenados()->get();
         return view('videos.categorias.show', compact('secciones', 'categoria', 'videos'));
+    }
+
+    /** Pantalla para definir el orden de reproducción de los videos de una categoría. */
+    public function ordenar($id)
+    {
+        $videoCategoria = VideoCategoria::findOrFail($id);
+        $videos = $videoCategoria->videos()->ordenados()
+            ->get(['id', 'categoria_id', 'nombre', 'youtube', 'drive', 'archivo', 'orden', 'vistas', 'created_at']);
+
+        return view('videos.categorias.ordenar', compact('videoCategoria', 'videos'));
+    }
+
+    public function guardarOrden(Request $request, $id)
+    {
+        $videoCategoria = VideoCategoria::findOrFail($id);
+        $data = $request->validate([
+            'orden' => 'required|array',
+            'orden.*' => 'integer',
+        ]);
+
+        // Solo se aceptan videos de esta categoría; los que no lleguen quedan al final.
+        $ids = $videoCategoria->videos()->pluck('id')->all();
+        $enviados = array_values(array_unique(array_intersect(array_map('intval', $data['orden']), $ids)));
+        $restantes = $videoCategoria->videos()->ordenados()->whereNotIn('id', $enviados)->pluck('id')->all();
+
+        DB::transaction(function () use ($enviados, $restantes) {
+            foreach ([...$enviados, ...$restantes] as $i => $videoId) {
+                Video::whereKey($videoId)->toBase()->update(['orden' => $i + 1]);
+            }
+        });
+
+        return redirect()->route('videoscat.index')
+            ->with('success', 'Orden de "'.$videoCategoria->nombre.'" guardado. Así se verá en la web.');
     }
 
 

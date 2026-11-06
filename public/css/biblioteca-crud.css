@@ -1655,3 +1655,4 @@ textarea.form-control[rows="2"] { min-height: 70px; }
 :root[data-theme="dark"] .form-text,
 :root[data-theme="dark"] .bv-crud-meta { color: var(--bv-text-muted); }
 :root[data-theme="dark"] .badge-light { background-color: rgba(255, 255, 255, 0.1); color: var(--bv-text); }
+:root[data-theme="dark"] .alert-light { background-color: var(--bv-surface); color: var(--bv-text); border-color: var(--bv-border-strong); }

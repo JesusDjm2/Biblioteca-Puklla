@@ -25,7 +25,8 @@ class VideoController extends Controller
         }
 
         if ($request->filled('categoria_id')) {
-            $query->where('categoria_id', $request->integer('categoria_id'));
+            // Dentro de una categoría se listan en su orden de reproducción.
+            $query->where('categoria_id', $request->integer('categoria_id'))->reorder()->ordenados();
         }
 
         match ($request->input('fuente')) {
@@ -120,13 +121,21 @@ class VideoController extends Controller
         $video = Video::with('categoria')->findOrFail($id);
         $this->registrarVista($request, $video);
 
-        $relacionados = Video::where('categoria_id', $video->categoria_id)
-            ->where('id', '!=', $video->id)
-            ->latest()
-            ->limit(6)
-            ->get();
+        // Videos de la sección en su orden de reproducción (definido en el panel).
+        $seccion = Video::where('categoria_id', $video->categoria_id)->ordenados()
+            ->get(['id', 'nombre', 'youtube', 'drive', 'archivo', 'created_at', 'vistas']);
+        $pos = $seccion->search(fn ($v) => $v->id === $video->id);
+        $anterior = $pos > 0 ? $seccion[$pos - 1] : null;
+        $siguiente = $pos !== false && $pos < $seccion->count() - 1 ? $seccion[$pos + 1] : null;
 
-        return view('videos.show', compact('video', 'relacionados'));
+        // "A continuación": los que siguen y, al llegar al final, vuelve al inicio.
+        $relacionados = $pos === false
+            ? $seccion->take(6)
+            : $seccion->slice($pos + 1)->concat($seccion->take($pos))->take(6)->values();
+        $posicion = $pos === false ? null : $pos + 1;
+        $totalSeccion = $seccion->count();
+
+        return view('videos.show', compact('video', 'relacionados', 'anterior', 'siguiente', 'posicion', 'totalSeccion'));
     }
 
     /**

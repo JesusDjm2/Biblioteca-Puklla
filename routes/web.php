@@ -80,6 +80,8 @@ Route::middleware(['auth', 'role:admin|videos|biblioteca'])->group(function () {
     Route::post('videos-drive/iniciar', [VideoController::class, 'iniciarSubidaDrive'])->name('videos.drive.iniciar');
     Route::resource('Videos', VideoController::class)->except(['show'])->names('videos');
     Route::resource('video-categorias', VideoCategoriaController::class)->except(['show'])->names('videoscat');
+    Route::get('video-categorias/{id}/ordenar', [VideoCategoriaController::class, 'ordenar'])->whereNumber('id')->name('videoscat.ordenar');
+    Route::put('video-categorias/{id}/ordenar', [VideoCategoriaController::class, 'guardarOrden'])->whereNumber('id')->name('videoscat.ordenar.guardar');
 });
 
 Route::get('libros/create/{categoria?}', [LibroController::class, 'create'])->name('libros.create')
