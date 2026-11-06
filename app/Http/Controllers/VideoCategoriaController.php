@@ -16,6 +16,7 @@ class VideoCategoriaController extends Controller
                 'videos as drive_count' => fn ($q) => $q->whereNotNull('drive')->where('drive', '!=', ''),
                 'videos as archivo_count' => fn ($q) => $q->whereNotNull('archivo'),
             ])
+            ->withSum('videos', 'vistas')
             ->with(['videos' => fn ($q) => $q->select('id', 'categoria_id', 'nombre', 'youtube', 'drive', 'archivo', 'created_at')->latest()->latest('id')])
             ->orderBy('nombre')
             ->get();
@@ -31,7 +32,7 @@ class VideoCategoriaController extends Controller
             ->orderBy('nombre', 'asc')
             ->get();
 
-        $videos = Video::orderBy('created_at', 'desc')->get();
+        $videos = Video::with('categoria')->orderBy('created_at', 'desc')->get();
         return view('videos.lista', compact('videos', 'categorias'));
     }
     public function create()

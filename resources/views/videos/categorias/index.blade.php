@@ -63,6 +63,9 @@
 
                 <div class="cg-card__cifras">
                     <span><strong>{{ $cat->videos_count }}</strong> {{ $cat->videos_count === 1 ? 'video' : 'videos' }}</span>
+                    @if ($cat->videos_sum_vistas)
+                        <span class="cg-chip cg-chip--gris" title="Vistas en la web"><i class="fa fa-eye"></i> {{ number_format($cat->videos_sum_vistas) }}</span>
+                    @endif
                     @if ($cat->youtube_count)
                         <span class="cg-chip cg-chip--gris" title="En YouTube"><i class="fa fa-youtube-play"></i> {{ $cat->youtube_count }}</span>
                     @endif

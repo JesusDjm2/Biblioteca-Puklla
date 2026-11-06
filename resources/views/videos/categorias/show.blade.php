@@ -1,5 +1,8 @@
 ﻿@extends('layouts.padre')
 @section('titulo', '- ' . $categoria->nombre)
+@section('og_titulo', 'Videos: '.$categoria->nombre.' | Puklla Virtual')
+@section('og_descripcion', $videos->count().' '.($videos->count() === 1 ? 'video' : 'videos').' de '.$categoria->nombre.' en Puklla Virtual, EESP Pukllasunchis.')
+@section('og_imagen', optional($videos->first())->miniatura_url ?? asset('img/biblioteca-muestra.jpg'))
 
 @section('estilos')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -254,6 +257,15 @@
             <div class="lib-hero__meta">
                 <span><i class="fa fa-film"></i> {{ $videos->count() }}
                     {{ $videos->count() === 1 ? 'video' : 'videos' }}</span>
+                <span><i class="far fa-eye"></i> {{ number_format($videos->sum('vistas')) }} vistas</span>
+            </div>
+            <div class="mt-3">
+                @include('partials.compartir', [
+                    'variante' => 'texto',
+                    'claro' => true,
+                    'url' => route('videoscat.show', $categoria->url),
+                    'titulo' => 'Videos: '.$categoria->nombre.' — Puklla Virtual',
+                ])
             </div>
         </div>
     </div>
@@ -267,23 +279,7 @@
                     <h4 class="vl-sidebar__title">
                         <i class="fa fa-folder-open"></i> Secciones
                     </h4>
-                    <ul class="vl-sidebar__list">
-                        <li class="vl-sidebar__item">
-                            <a href="{{ route('videos') }}" class="vl-sidebar__link">
-                                <span>Todos los videos</span>
-                                <span class="vl-sidebar__count">{{ $secciones->sum('videos_count') }}</span>
-                            </a>
-                        </li>
-                        @foreach ($secciones as $sec)
-                            <li class="vl-sidebar__item">
-                                <a href="{{ route('videoscat.show', $sec->url) }}"
-                                    class="vl-sidebar__link {{ $sec->id === $categoria->id ? 'is-active' : '' }}">
-                                    <span>{{ $sec->nombre }}</span>
-                                    <span class="vl-sidebar__count">{{ $sec->videos_count }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                    @include('videos.partials.secciones', ['secciones' => $secciones, 'activa' => $categoria->id, 'total' => $secciones->sum('videos_count')])
                 </aside>
             </div>
 
@@ -304,29 +300,7 @@
                 <div class="row g-3" id="vl-grid">
                     @forelse ($videos as $video)
                         <div class="col-6 col-md-4 col-lg-4 vl-item" data-nombre="{{ mb_strtolower($video->nombre) }}">
-                            <div class="video-card">
-                                <div class="video-card__thumb">
-                                    @if ($video->youtube)
-                                        <a href="https://www.youtube.com/watch?v={{ $video->youtube }}" target="_blank"
-                                            rel="noopener" style="display:block;width:100%;height:100%;position:relative;">
-                                            <img src="https://img.youtube.com/vi/{{ $video->youtube }}/hqdefault.jpg"
-                                                alt="{{ $video->nombre }}" loading="lazy">
-                                            <span class="video-card__overlay"><i class="fab fa-youtube"></i></span>
-                                        </a>
-                                    @elseif ($video->drive)
-                                        <div class="video-card__drive-wrap">
-                                            <iframe src="https://drive.google.com/file/d/{{ $video->drive }}/preview"
-                                                loading="lazy" allowfullscreen></iframe>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="video-card__body">
-                                    <h3 class="video-card__title" title="{{ $video->nombre }}">{{ $video->nombre }}</h3>
-                                    @if ($video->descripcion)
-                                        <p class="video-card__desc">{{ Str::limit($video->descripcion, 80) }}</p>
-                                    @endif
-                                </div>
-                            </div>
+                            @include('videos.partials.tarjeta', ['video' => $video, 'mostrarCategoria' => false])
                         </div>
                     @empty
                         <div class="col-12">

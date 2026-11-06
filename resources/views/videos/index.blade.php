@@ -63,6 +63,7 @@
                     <th>Nombre</th>
                     <th>Categoría</th>
                     <th style="width:9rem;">Origen</th>
+                    <th style="width:6rem;" class="text-center">Vistas</th>
                     <th style="width:8rem;" class="text-center">Acciones</th>
                 </tr>
             </thead>
@@ -101,6 +102,9 @@
                                     <span class="text-muted small">Sin video</span>
                             @endswitch
                         </td>
+                        <td class="text-center small align-middle" title="Visitas a la página pública del video">
+                            <i class="fa fa-eye text-muted"></i> {{ number_format((int) $video->vistas) }}
+                        </td>
                         <td class="bv-crud-actions text-center text-nowrap align-middle">
                             <a href="{{ $video->url_publica }}" target="_blank" rel="noopener"
                                 class="btn btn-sm btn-outline-secondary" title="Ver página pública (para compartir)">
@@ -118,7 +122,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="p-0 border-0">
+                        <td colspan="6" class="p-0 border-0">
                             <div class="bv-empty-state">
                                 <i class="fa fa-film bv-empty-icon"></i>
                                 <p>No se encontraron videos.</p>

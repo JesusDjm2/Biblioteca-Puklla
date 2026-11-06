@@ -115,9 +115,10 @@ class VideoController extends Controller
      * Página pública del video: reproductor, datos, botones para compartir y
      * más videos de la misma categoría. Es la URL que se comparte en redes.
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $video = Video::with('categoria')->findOrFail($id);
+        $this->registrarVista($request, $video);
 
         $relacionados = Video::where('categoria_id', $video->categoria_id)
             ->where('id', '!=', $video->id)
@@ -126,6 +127,28 @@ class VideoController extends Controller
             ->get();
 
         return view('videos.show', compact('video', 'relacionados'));
+    }
+
+    /**
+     * Suma una vista al video: una por sesión (recargar no cuenta) y sin contar
+     * robots ni las vistas previas que generan WhatsApp, Facebook, etc. al compartir.
+     */
+    private function registrarVista(Request $request, Video $video): void
+    {
+        $agente = strtolower((string) $request->userAgent());
+        if ($agente === '' || preg_match('/bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|discord|skype|curl|wget|python|headless/', $agente)) {
+            return;
+        }
+
+        $vistos = $request->session()->get('videos_vistos', []);
+        if (in_array($video->id, $vistos, true)) {
+            return;
+        }
+        $request->session()->put('videos_vistos', array_slice([...$vistos, $video->id], -200));
+
+        // Por consulta directa: no toca updated_at y evita choques entre visitas simultáneas.
+        Video::whereKey($video->id)->toBase()->increment('vistas');
+        $video->vistas++;
     }
 
     public function edit($id)

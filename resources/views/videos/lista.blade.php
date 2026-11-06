@@ -146,6 +146,15 @@
             <div class="lib-hero__meta">
                 <span><i class="fa fa-film"></i> {{ $videos->count() }} videos</span>
                 <span><i class="fa fa-folder-open"></i> {{ $categorias->count() }} secciones</span>
+                <span><i class="far fa-eye"></i> {{ number_format($videos->sum('vistas')) }} vistas</span>
+            </div>
+            <div class="mt-3">
+                @include('partials.compartir', [
+                    'variante' => 'texto',
+                    'claro' => true,
+                    'url' => route('videos'),
+                    'titulo' => 'Videos — Puklla Virtual',
+                ])
             </div>
         </div>
     </div>
@@ -164,22 +173,7 @@
                     <h4 class="vl-sidebar__title">
                         <i class="fa fa-folder-open"></i> Secciones
                     </h4>
-                    <ul class="vl-sidebar__list">
-                        <li class="vl-sidebar__item">
-                            <a href="{{ route("videos") }}" class="vl-sidebar__link is-active">
-                                <span>Todos los videos</span>
-                                <span class="vl-sidebar__count">{{ $videos->count() }}</span>
-                            </a>
-                        </li>
-                        @foreach ($categorias as $cat)
-                            <li class="vl-sidebar__item">
-                                <a href="{{ route("videoscat.show", $cat->url) }}" class="vl-sidebar__link">
-                                    <span>{{ $cat->nombre }}</span>
-                                    <span class="vl-sidebar__count">{{ $cat->videos_count }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                    @include('videos.partials.secciones', ['secciones' => $categorias, 'activa' => null, 'total' => $videos->count()])
                 </aside>
             </div>
 
@@ -203,34 +197,7 @@
                 <div class="row g-3" id="vl-grid">
                     @forelse ($videos as $video)
                         <div class="col-6 col-md-4 col-lg-4 vl-item" data-nombre="{{ mb_strtolower($video->nombre) }}">
-                            <div class="video-card">
-                                <div class="video-card__thumb">
-                                    @if ($video->youtube)
-                                        <a href="https://www.youtube.com/watch?v={{ $video->youtube }}"
-                                           target="_blank" rel="noopener" style="display:block;width:100%;height:100%;position:relative;">
-                                            <img src="https://img.youtube.com/vi/{{ $video->youtube }}/hqdefault.jpg"
-                                                 alt="{{ $video->nombre }}" loading="lazy">
-                                            <span class="video-card__overlay"><i class="fab fa-youtube"></i></span>
-                                        </a>
-                                    @elseif ($video->drive)
-                                        <div class="video-card__drive-wrap">
-                                            <iframe src="https://drive.google.com/file/d/{{ $video->drive }}/preview"
-                                                    loading="lazy" allowfullscreen></iframe>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="video-card__body">
-                                    <h3 class="video-card__title" title="{{ $video->nombre }}">{{ $video->nombre }}</h3>
-                                    @if ($video->descripcion)
-                                        <p class="video-card__desc">{{ Str::limit($video->descripcion, 80) }}</p>
-                                    @endif
-                                    @if ($video->categoria)
-                                        <a href="{{ route("videoscat.show", $video->categoria->url) }}" class="video-card__cat">
-                                            <i class="fa fa-folder-open"></i> {{ $video->categoria->nombre }}
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
+                            @include('videos.partials.tarjeta', ['video' => $video, 'mostrarCategoria' => true])
                         </div>
                     @empty
                         <div class="col-12">
