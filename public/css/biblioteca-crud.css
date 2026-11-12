@@ -29,29 +29,36 @@
 }
 
 :root[data-theme="dark"] {
-    --bv-bg: #1c1712;
-    --bv-surface: #262019;
-    --bv-surface-2: #2f271e;
-    --bv-text: #f1ece4;
-    --bv-text-muted: #a89684;
-    --bv-border: rgba(255, 255, 255, 0.09);
-    --bv-border-strong: rgba(255, 255, 255, 0.18);
-    --bv-accent: #e0a355;
+    --bv-bg: #0b0f17;
+    --bv-surface: #111827;
+    --bv-surface-2: #182234;
+    --bv-text: #f1f5f9;
+    --bv-text-muted: #94a3b8;
+    --bv-border: rgba(255, 255, 255, 0.08);
+    --bv-border-strong: rgba(255, 255, 255, 0.16);
+    --bv-accent: #e2a85c;
     --bv-accent-hover: #edb46c;
-    --bv-accent-soft: rgba(224, 163, 85, 0.16);
-    --bv-accent-border: rgba(224, 163, 85, 0.4);
+    --bv-accent-soft: rgba(226, 168, 92, 0.16);
+    --bv-accent-border: rgba(226, 168, 92, 0.38);
     --bv-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
     --bv-shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.55);
-    --bv-danger: #e5697c;
-    --bv-danger-soft: rgba(229, 105, 124, 0.14);
-    --bv-input-bg: #2a231c;
-    --bv-input-text: #f1ece4;
-    --bv-sidebar-bg: #14100c;
-    --bv-sidebar-bg-2: #0e0b08;
+    --bv-danger: #f87171;
+    --bv-danger-soft: rgba(248, 113, 113, 0.14);
+    --bv-input-bg: #182234;
+    --bv-input-text: #f1f5f9;
+    --bv-sidebar-bg: #090d16;
+    --bv-sidebar-bg-2: #060910;
     --bv-sidebar-text: rgba(255, 255, 255, 0.75);
     --bv-sidebar-text-strong: #ffffff;
-    --bv-sidebar-border: rgba(255, 255, 255, 0.08);
-    --bv-topbar-bg: rgba(28, 23, 18, 0.82);
+    --bv-sidebar-border: rgba(255, 255, 255, 0.07);
+    --bv-topbar-bg: rgba(17, 24, 39, 0.90);
+}
+
+/* admin/css/style.css fija color:#000 en h1–h5. En modo oscuro se hereda el
+   color del texto. :where() deja la especificidad en la de un "h5" suelto, así
+   solo le gana a esa regla genérica y no a los estilos de componentes. */
+:where(:root[data-theme="dark"]) :where(h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6) {
+    color: inherit;
 }
 
 html,
